@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Faculty Schedules | Campus Locate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="schedules.css">
+</head>
+
+<body data-root="../">
+    <div id="app"></div>
+    <script src="../js/common.js"></script>
+    <script>const session = getSession() || { role: 'student', name: 'Guest Student' }; setSession(session); renderPage('Faculty Schedules', 'Faculty schedules', `<div class="page"><div class="page-heading"><div><p class="eyebrow">${session.role === 'student' ? 'View only' : 'Scheduling workspace'}</p><h1>Faculty schedules.</h1><p class="subheading">Engineering data is active; other departments remain available for future entries.</p></div>${session.role !== 'student' ? '<button class="outline" id="export">Export schedule</button>' : ''}</div><div class="card filter-card"><div class="form-grid"><div class="field"><label>Department</label><select id="department-filter">${optionList(DEPARTMENTS, 'Engineering Department')}</select></div><div class="field"><label>Year level</label><select id="year-filter"><option>ALL</option><option>First Year</option><option>Second Year</option><option>Third Year</option><option>Fourth Year</option></select></div></div></div><div class="card"><div class="card-header"><div><h2>07:00 AM – 09:00 PM</h2><p>One cell per hour · multi-day schedules share one entry.</p></div></div><div id="schedule-table" class="schedule-grid"></div></div></div>`); const table = document.querySelector('#schedule-table'); const draw = () => renderScheduleTable(table, document.querySelector('#department-filter').value, document.querySelector('#year-filter').value); draw(); document.querySelector('#department-filter').onchange = draw; document.querySelector('#year-filter').onchange = draw; document.querySelector('#export')?.addEventListener('click', () => { const blob = new Blob([JSON.stringify(getSchedules(), null, 2)], { type: 'application/json' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'faculty-schedules.json'; a.click() });</script>
+</body>
+
+</html>

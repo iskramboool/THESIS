@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>System Overview | Campus Locate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/super-admin.css">
+</head>
+
+<body data-root="../">
+    <div id="app"></div>
+    <script src="../js/common.js"></script>
+    <script>if (requireRole(['super_admin'])) { renderPage('Overview', 'System-wide overview', `<div class="page"><div class="page-heading"><div><p class="eyebrow">Super Admin · All departments</p><h1>System-wide overview.</h1><p class="subheading">Seven departments grouped by faculty title and campus status.</p></div></div><div class="grid grid-3"><div class="card stat"><span>Departments</span><strong>7</strong><p>Full organization scope</p></div><div class="card stat"><span>Rooms</span><strong>${ROOMS.length}</strong><p>Across four floors</p></div><div class="card stat"><span>Sensor status</span><strong>87%</strong><p>Reporting normally</p></div></div><div class="grid grid-2" style="margin-top:18px">${DEPARTMENTS.map((d, i) => `<div class="card"><h2>${d}</h2><p>Full-time Instructor · ${i + 2}</p><p>Part-time Instructor · ${i + 1}</p><p>Program Chairperson · 1</p></div>`).join('')}</div></div>`) }</script>
+</body>
+
+</html>

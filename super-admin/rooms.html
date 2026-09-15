@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Rooms | Campus Locate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/super-admin.css">
+</head>
+
+<body data-root="../">
+    <div id="app"></div>
+    <script src="../js/common.js"></script>
+    <script src="../js/super-admin.js"></script>
+    <script>if (requireRole(['super_admin'])) { renderPage('Rooms', 'Room management', `<div class="page"><div class="page-heading"><div><p class="eyebrow">Super Admin · Database rooms</p><h1>Room management.</h1><p class="subheading">${roomStore.length} rooms configured across four floors. Room names remain controlled by the database.</p></div></div><div class="card room-form"><div class="form-grid"><div class="field"><label for="room-name">Room Name</label><input id="room-name" placeholder="425"></div><div class="field"><label for="occupancy">Occupancy</label><input id="occupancy" type="number" min="1" placeholder="36"></div></div><button class="primary" style="margin-top:15px" id="add-room">Add room</button></div><div class="card"><table class="data-table"><thead><tr><th>Room</th><th>Floor</th><th>Occupancy</th><th>Status</th><th>Action</th></tr></thead><tbody>${roomStore.map((r, i) => `<tr><td>${r.room}</td><td>${r.floor}F</td><td>${r.occupancy}</td><td><span class="badge ${r.status === 'Active' ? 'active' : 'inactive'}">${r.status}</span></td><td><button class="outline" onclick="toast('Room ${r.room} selected for editing')">Edit</button></td></tr>`).join('')}</tbody></table></div></div>`); document.querySelector('#add-room').onclick = () => { const name = document.querySelector('#room-name').value.trim(), occupancy = Number(document.querySelector('#occupancy').value); if (!name || !occupancy) { toast('Room name and occupancy are required.'); return } roomStore.push({ room: name, floor: Math.ceil(Number(name) / 100), occupancy, status: 'Inactive' }); saveRooms(); location.reload() } }</script>
+</body>
+
+</html>

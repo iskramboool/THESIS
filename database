@@ -1,0 +1,12 @@
+const firebaseConfig = {
+    apiKey: "AIzaSyB9kCZIOMNvJPkn6d9KbsLDrY1V8scSNCM",
+    authDomain: "smart-faculty-scheduling.firebaseapp.com",
+    databaseURL: "https://smart-faculty-scheduling-default-rtdb.firebaseio.com",
+    projectId: "smart-faculty-scheduling",
+    storageBucket: "smart-faculty-scheduling.firebasestorage.app",
+    messagingSenderId: "53152934456",
+    appId: "1:53152934456:web:00185ea60b9509c86c14cd",
+    measurementId: "G-N4B44215DY"
+  };
+
+  

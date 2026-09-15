@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Attendance | Campus Locate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+
+<body data-root="../">
+    <div id="app"></div>
+    <script src="../js/common.js"></script>
+    <script>if (requireRole(['admin'])) { renderPage('Attendance', 'Department attendance', `<div class="page"><div class="page-heading"><div><p class="eyebrow">QR records · Server verification required</p><h1>Attendance review.</h1><p class="subheading">Verify that timestamped QR records belong to the correct faculty transaction.</p></div></div><div class="card"><table class="data-table"><thead><tr><th>Faculty code</th><th>Faculty</th><th>Scanned at</th><th>Expires</th><th>Status</th><th>Verification</th></tr></thead><tbody><tr><td>P000</td><td>Dr. Elena Rivera</td><td>08:15 AM · Sep 15</td><td>08:15 PM · Sep 15</td><td><span class="badge present">Present</span></td><td><button class="outline" onclick="toast('Attendance verified')">Verify</button></td></tr><tr><td>P001</td><td>Prof. Javier Reyes</td><td>09:07 AM · Sep 15</td><td>09:07 PM · Sep 15</td><td><span class="badge active">In Session</span></td><td><button class="outline" onclick="toast('Attendance verified')">Verify</button></td></tr></tbody></table></div></div>`) }</script>
+</body>
+
+</html>

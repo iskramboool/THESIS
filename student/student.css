@@ -1,0 +1,7 @@
+.map-note {
+    margin-top: 18px
+}
+
+.map-note b {
+    color: var(--teal)
+}

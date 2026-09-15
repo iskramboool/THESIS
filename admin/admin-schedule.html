@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Schedule Approvals | Campus Locate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+
+<body data-root="../">
+    <div id="app"></div>
+    <script src="../js/common.js"></script>
+    <script src="../js/admin.js"></script>
+    <script>if (requireRole(['admin'])) { const s = getSession(); renderPage('Faculty Schedules', 'Schedule approvals', `<div class="page"><div class="page-heading"><div><p class="eyebrow">FCFS approval queue</p><h1>Review schedule requests.</h1><p class="subheading">Faculty identity remains tied to the account and cannot be changed here.</p></div><a class="outline" href="../schedules/schedules.html">View published schedule</a></div><div class="card"><table class="data-table"><thead><tr><th>Faculty</th><th>Subject</th><th>Room / Days</th><th>Status</th><th>Action</th></tr></thead><tbody>${getSchedules().filter(x => x.department === s.department).map(x => `<tr><td>${x.faculty}</td><td>${x.code} · ${x.subject}<br>${x.year}</td><td>Room ${x.room}<br>${x.days.join(', ')}</td><td><span class="badge ${x.status}">${x.status}</span></td><td class="approval-actions">${x.status === 'pending' ? `<button class="approve" data-approve="${x.id}">Approve</button><button class="reject" data-reject="${x.id}">Reject</button>` : 'No action'}</td></tr>`).join('')}</tbody></table></div></div>`); document.querySelectorAll('[data-approve]').forEach(b => b.onclick = () => { const d = getSchedules(), x = d.find(v => v.id === Number(b.dataset.approve)); x.status = 'approved'; saveSchedules(d); location.reload() }); document.querySelectorAll('[data-reject]').forEach(b => b.onclick = () => { const d = getSchedules(), x = d.find(v => v.id === Number(b.dataset.reject)); x.status = 'rejected'; saveSchedules(d); location.reload() }) }</script>
+</body>
+
+</html>

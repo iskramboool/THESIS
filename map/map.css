@@ -1,0 +1,22 @@
+.map-shell {
+    min-height: 500px
+}
+
+.map-room {
+    transition: .2s
+}
+
+.map-room:hover {
+    transform: scale(1.05);
+    border-color: var(--teal);
+    z-index: 3
+}
+
+.map-note {
+    margin-top: 18px
+}
+
+.map-note strong {
+    font-size: 11px;
+    color: var(--teal)
+}

@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Live Map | Campus Locate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="map.css">
+</head>
+
+<body data-root="../">
+    <div id="app"></div>
+    <script src="../js/common.js"></script>
+    <script src="../js/map.js"></script>
+    <script>const session = getSession() || { role: 'student', name: 'Guest Student' }; setSession(session); renderPage('Map', 'Live campus map', `<div class="page"><div class="page-heading"><div><p class="eyebrow">Live map · Sensor-aware presence</p><h1>Building A campus map.</h1><p class="subheading">Switch floors to inspect rooms, faculty presence, and classroom activity.</p></div></div>${mapMarkup()}</div>`); renderMap();</script>
+</body>
+
+</html>

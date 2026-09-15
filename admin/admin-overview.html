@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Admin Overview | Campus Locate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+
+<body data-root="../">
+    <div id="app"></div>
+    <script src="../js/common.js"></script>
+    <script>if (requireRole(['admin'])) { const s = getSession(); renderPage('Admin Overview', 'Admin overview', `<div class="page"><div class="page-heading"><div><p class="eyebrow">Department administration</p><h1>${s.department}</h1><p class="subheading">Only faculty, schedules, and attendance for your assigned department are visible.</p></div></div><div class="grid grid-3"><div class="card stat"><span>Faculty</span><strong>12</strong><p>Department members</p></div><div class="card stat"><span>Pending approvals</span><strong>${getSchedules().filter(x => x.status === 'pending').length}</strong><p>Awaiting review</p></div><div class="card stat"><span>Present today</span><strong>9 / 12</strong><p>QR records verified</p></div></div><div class="card" style="margin-top:18px"><div class="card-header"><div><h2>FCFS request queue</h2><p>Older valid requests appear first. Conflicts must be resolved before approval.</p></div><a class="primary" href="admin-schedule.html">Review schedules</a></div><div class="table-wrap"><table class="data-table"><thead><tr><th>Faculty</th><th>Subject</th><th>Submitted</th><th>Status</th></tr></thead><tbody>${getSchedules().filter(x => x.department === s.department).map(x => `<tr><td>${x.faculty}</td><td>${x.code} · ${x.subject}</td><td>Today · ${x.id}</td><td><span class="badge ${x.status}">${x.status}</span></td></tr>`).join('')}</tbody></table></div></div></div>`) }</script>
+</body>
+
+</html>

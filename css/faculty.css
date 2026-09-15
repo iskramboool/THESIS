@@ -1,0 +1,29 @@
+.presence-card {
+    background: #eaf7f4;
+    border-color: #c9e7e1
+}
+
+.qr-panel {
+    background: #fff8ef;
+    border-color: #f2d7bc
+}
+
+.qr-code {
+    width: 130px;
+    height: 130px;
+    display: grid;
+    place-items: center;
+    background: repeating-linear-gradient(45deg, #1d3a43 0 3px, #fff 3px 7px);
+    color: #fff;
+    font-weight: 700;
+    border: 10px solid #fff;
+    margin: 15px 0
+}
+
+.request-note {
+    color: #ae7a38 !important
+}
+
+.profile-request {
+    margin-top: 18px
+}

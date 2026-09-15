@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Classroom Verification | Campus Locate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/super-admin.css">
+</head>
+
+<body data-root="../">
+    <div id="app"></div>
+    <script src="../js/common.js"></script>
+    <script src="../js/super-admin.js"></script>
+    <script>if (requireRole(['super_admin'])) { renderPage('Classroom Verification', 'Classroom verification', `<div class="page"><div class="page-heading"><div><p class="eyebrow">ESP32 sensor status</p><h1>Classroom verification.</h1><p class="subheading">Active means the sensor currently detects people or activity. It does not simply mean the room exists.</p></div></div><div class="card"><table class="data-table"><thead><tr><th>Room</th><th>Floor</th><th>Sensor</th><th>Detected activity</th><th>Status</th><th>Verify</th></tr></thead><tbody>${roomStore.slice(0, 12).map(r => `<tr><td>${r.room}</td><td>${r.floor}F</td><td><span class="sensor-live">ESP32-${r.room}</span></td><td>${r.status === 'Active' ? 'Occupied' : 'No activity'}</td><td><span class="badge ${r.status === 'Active' ? 'active' : 'inactive'}">${r.status}</span></td><td><button class="outline" onclick="toast('Sensor status verified')">Verify</button></td></tr>`).join('')}</tbody></table></div></div>`) }</script>
+</body>
+
+</html>

@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Faculty Portal | Campus Locate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/faculty.css">
+</head>
+
+<body data-root="../">
+    <div id="app"></div>
+    <script src="../js/common.js"></script>
+    <script>if (requireRole(['faculty'])) { const s = getSession(); renderPage('Faculty Portal', 'Faculty portal', `<div class="page"><div class="page-heading"><div><p class="eyebrow">Faculty workspace · ${s.department}</p><h1>Good morning, ${s.name}.</h1><p class="subheading">Manage your schedule and submit changes for Admin confirmation.</p></div><a class="outline" href="faculty-schedule.html">Manage schedules</a></div><div class="grid grid-2"><div class="card presence-card"><span class="kicker">QR attendance · P000</span><h2>Present on campus</h2><p>Your QR attendance record is valid for 12 hours after server validation. Room sensors can change this to <b>In Session</b>.</p><div class="qr-code">P000<br>09·15·26</div><button class="primary" id="scan-qr">Record QR attendance</button><p id="qr-status" class="request-note">No new scan recorded in this browser.</p></div><div class="card qr-panel"><div class="card-header"><div><h2>My schedule requests</h2><p>New and edited schedules require Admin approval.</p></div><span class="badge pending">Pending review</span></div><div class="table-wrap"><table class="data-table"><thead><tr><th>Subject</th><th>Room</th><th>Status</th></tr></thead><tbody id="faculty-schedule-table"></tbody></table></div><a class="primary" style="display:inline-block;margin-top:15px;text-decoration:none" href="faculty-schedule.html">Add schedule</a></div></div><div class="card profile-request"><div class="card-header"><div><h2>Profile change request</h2><p>Name, title, and department changes stay pending until Admin approval.</p></div><span class="badge pending">Pending Admin Approval</span></div><button class="outline" id="profile-request">Submit change request</button></div></div>`); const mine = getSchedules().filter(x => x.faculty === s.name); document.querySelector('#faculty-schedule-table').innerHTML = mine.length ? mine.map(x => `<tr><td>${x.subject}<br><small>${x.code}</small></td><td>${x.room}</td><td><span class="badge ${x.status}">${x.status}</span></td></tr>`).join('') : '<tr><td colspan="3" class="empty">No schedules submitted yet.</td></tr>'; document.querySelector('#scan-qr').onclick = () => { localStorage.setItem('qrAttendance', JSON.stringify({ code: 'P000', date: new Date().toISOString().slice(0, 10), scannedAt: Date.now(), expiresAt: Date.now() + 43200000 })); document.querySelector('#qr-status').textContent = 'QR attendance recorded. Valid for 12 hours.'; toast('Attendance saved with timestamp and expiry.'); }; document.querySelector('#profile-request').onclick = () => toast('Profile change request submitted for Admin approval.') } </script>
+</body>
+
+</html>

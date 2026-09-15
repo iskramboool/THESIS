@@ -1,0 +1,1 @@
+if(document.querySelector('#map-canvas')){window.currentFloor=1;renderMap()}

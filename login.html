@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Secure Login | Campus Locate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/login.css">
+</head>
+
+<body>
+    <main class="login-page">
+        <form class="login-card" id="login-form"><a class="role-choice" href="index.html">← Change user type</a>
+            <h1>Welcome back</h1>
+            <p>Sign in as <strong id="login-role">Faculty</strong> to continue.</p>
+            <div class="field"><label for="name">Name</label><input id="name" required placeholder="Your full name">
+            </div>
+            <div class="field"><label for="department">Department</label><select id="department" required></select>
+            </div>
+            <div class="field"><label for="title">Title</label><select id="title" required>
+                    <option value="">Select title</option>
+                    <option>Full-time Instructor</option>
+                    <option>Part-time Instructor</option>
+                    <option>Program Chairperson</option>
+                </select></div>
+            <div class="field"><label for="password">Password</label><input id="password" type="password" required
+                    placeholder="Enter password"></div><button class="primary" type="submit">Sign in securely</button>
+            <p class="footer-note">Prototype credentials are validated in the browser only. Production deployment must
+                use server-side hashing and sessions.</p>
+        </form>
+        <div class="toast"></div>
+    </main>
+    <script src="js/common.js"></script>
+    <script>const queryRole = new URLSearchParams(location.search).get('role'); if (queryRole) localStorage.setItem('selectedRole', queryRole)</script>
+    <script src="js/auth.js"></script>
+</body>
+
+</html>

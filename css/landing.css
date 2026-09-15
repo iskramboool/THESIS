@@ -1,0 +1,11 @@
+.selection-header .brand {
+    padding-bottom: 0
+}
+
+.role-card-choice:nth-child(2) .role-icon {
+    color: var(--orange)
+}
+
+.role-card-choice:nth-child(3) .role-icon {
+    color: var(--blue)
+}

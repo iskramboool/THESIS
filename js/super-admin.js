@@ -1,0 +1,2 @@
+const roomStore = JSON.parse(localStorage.getItem('rooms') || 'null') || ROOMS.map((room, i) => ({ room, floor: Math.ceil(Number(room) / 100), occupancy: 36, status: i % 5 === 0 ? 'Inactive' : 'Active' }));
+function saveRooms() { localStorage.setItem('rooms', JSON.stringify(roomStore)) }

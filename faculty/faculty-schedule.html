@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Faculty Schedule Editor | Campus Locate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/faculty.css">
+</head>
+
+<body data-root="../">
+    <div id="app"></div>
+    <script src="../js/common.js"></script>
+    <script src="../js/schedule.js"></script>
+    <script>if (requireRole(['faculty'])) { renderPage('Faculty Schedules', 'Schedule editor', `<div class="page"><div class="page-heading"><div><p class="eyebrow">Faculty-owned schedule</p><h1>Add a schedule.</h1><p class="subheading">Use one entry for multiple teaching days. Confirmation sends it to Admin as pending.</p></div><a class="outline" href="faculty-portal.html">Back to portal</a></div><div class="card"><form id="schedule-form"><div class="form-grid"><div class="field"><label for="subject">Subject name</label><input id="subject" name="subject" required placeholder="Computer Programming 1"></div><div class="field"><label for="code">Course code</label><input id="code" name="code" required placeholder="CP101"></div><div class="field"><label for="room">Room</label><select id="room" name="room" required><option value="">Select database room</option>${optionList(ROOMS)}</select></div><div class="field"><label for="year">Year level</label><select id="year" name="year" required>${optionList(['First Year', 'Second Year', 'Third Year', 'Fourth Year'])}</select></div><div class="field"><label for="start">Start time</label><input id="start" name="start" type="time" min="07:00" max="21:00" required></div><div class="field"><label for="end">End time</label><input id="end" name="end" type="time" min="07:00" max="21:00" required></div></div><div class="field" style="margin-top:15px"><label>Teaching days</label><div class="check-row">${DAYS.map(d => `<label><input type="checkbox" name="days" value="${d}">${d}</label>`).join('')}</div></div><button class="primary" style="margin-top:20px" type="submit">CONFIRM · Submit for Admin Approval</button></form></div><div class="card" style="margin-top:18px"><h2>My submitted schedules</h2><div id="schedule-table" class="schedule-grid"></div></div></div>`); renderScheduleTable(document.querySelector('#schedule-table'), getSession().department); }</script>
+</body>
+
+</html>

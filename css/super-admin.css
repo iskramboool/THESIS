@@ -1,0 +1,9 @@
+.room-form {
+    margin-bottom: 18px
+}
+
+.sensor-live {
+    color: var(--teal);
+    font-size: 10px;
+    font-weight: 700
+}
