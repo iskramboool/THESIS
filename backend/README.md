@@ -1,6 +1,6 @@
 # Backend integration contract
 
-The current workspace is a browser prototype because no Node.js project or server runtime existed when the revision began. The frontend is connected through `localStorage` so the workflows can be exercised and refreshed locally.
+The current workspace is a browser prototype because no Node.js project or server runtime existed when the revision began. The frontend is connected through `localStorage` so the workflows can be exercised and refreshed locally. The relational model is in `database/schema.sql`; the `apiFetch()` helper in `js/common.js` is the single frontend boundary to replace the local fallback with authenticated API calls.
 
 For production, replace the localStorage functions in `js/common.js`, `js/auth.js`, and `js/schedule.js` with authenticated API calls backed by `database/schema.sql`.
 

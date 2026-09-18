@@ -16,7 +16,83 @@
 <body data-root="../">
     <div id="app"></div>
     <script src="../js/common.js"></script>
-    <script>if (requireRole(['super_admin'])) { renderPage('Overview', 'System-wide overview', `<div class="page"><div class="page-heading"><div><p class="eyebrow">Super Admin · All departments</p><h1>System-wide overview.</h1><p class="subheading">Seven departments grouped by faculty title and campus status.</p></div></div><div class="grid grid-3"><div class="card stat"><span>Departments</span><strong>7</strong><p>Full organization scope</p></div><div class="card stat"><span>Rooms</span><strong>${ROOMS.length}</strong><p>Across four floors</p></div><div class="card stat"><span>Sensor status</span><strong>87%</strong><p>Reporting normally</p></div></div><div class="grid grid-2" style="margin-top:18px">${DEPARTMENTS.map((d, i) => `<div class="card"><h2>${d}</h2><p>Full-time Instructor · ${i + 2}</p><p>Part-time Instructor · ${i + 1}</p><p>Program Chairperson · 1</p></div>`).join('')}</div></div>`) }</script>
-</body>
+    <script>if (requireRole(['super_admin'])) { 
+        // DATABASE: In production, these stats would update in real-time via database connections
+        const facultyData = DEPARTMENTS.map(dept => {
+            const deptSchedules = getSchedules().filter(s => s.department === dept);
+            const fullTime = deptSchedules.filter(s => s.title === 'Full-time Instructor').length;
+            const partTime = deptSchedules.filter(s => s.title === 'Part-time Instructor').length;
+            const chairperson = deptSchedules.filter(s => s.title === 'Program Chairperson').length;
+            return { dept, fullTime, partTime, chairperson };
+        });
+        
+        renderPage('Overview', 'System-wide overview', 
+        `<div class="page">
+            <div class="page-heading">
+                <div>
+                    <p class="eyebrow">Super Admin · All departments</p>
+                    <h1>System-wide overview.</h1>
+                    <p class="subheading">Real-time system status across all departments.</p>
+                </div>
+            </div>
+                <div class="grid grid-3">
+                    <div class="card stat">
+                        <span>Departments</span>
+                        <strong>${DEPARTMENTS.length}</strong>
+                        <p>Full organization scope</p>
+                    </div>
+                    <div class="card stat">
+                        <span>Rooms</span>
+                        <strong>${ROOMS.length}</strong>
+                        <p>Across four floors</p>
+                    </div>
+                    <div class="card stat">
+                        <span>Sensor status</span>
+                        <strong>87%</strong>
+                        <p>Reporting normally</p>
+                    </div>
+                </div>
+                <div class="grid grid-2" style="margin-top:18px">
+                    ${facultyData.map(data => `
+                        <div class="card">
+                            <div class="card-header">
+                                <div>
+                                    <h2>${data.dept}</h2>
+                                    <p>Faculty members breakdown</p>
+                                </div>
+                                <button class="outline view-dept-members" data-dept="${data.dept}">View Members</button>
+                            </div>
+                            <p>Full-time Instructor · ${data.fullTime}</p>
+                            <p>Part-time Instructor · ${data.partTime}</p>
+                            <p>Program Chairperson · ${data.chairperson}</p>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>`);
+        
+        // DATABASE: Real-time update example (commented for reference):
+        /*
+        setInterval(() => {
+            const db = await getDatabaseConnection();
+            const roomCount = await db.query('SELECT COUNT(*) FROM rooms');
+            const sensorStatus = await db.query('SELECT AVG(status) FROM sensors');
+            // Update DOM elements with real-time data
+        }, 5000); // Update every 5 seconds
+        */
+        
+        // View department members button
+        document.querySelectorAll('.view-dept-members').forEach(btn => {
+            btn.onclick = () => {
+                const dept = btn.dataset.dept;
+                const deptMembers = getSchedules().filter(s => s.department === dept);
+                let memberText = `Members of ${dept}:\n\n`;
+                deptMembers.forEach(s => {
+                    memberText += `${s.faculty} - ${s.title}\n`;
+                });
+                alert(memberText);
+            };
+        });
+    }</script>
+    </body>
 
 </html>

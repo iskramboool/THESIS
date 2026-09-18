@@ -3,13 +3,335 @@
 }
 
 .map-room {
+    position: absolute;
+    width: 16%;
+    height: 22%;
+    background: #fff;
+    border: 1px solid #d7e2e0;
+    border-radius: 4px;
+    padding: 8px;
+    text-align: left;
+    color: #667b83;
+    font-size: 9px;
     transition: .2s
+}
+
+.map-room strong {
+    display: block;
+    font: 700 10px 'Space Grotesk';
+    color: #83969c
+}
+
+.map-room.occupied {
+    background: #fff4ea;
+    border-color: var(--orange)
 }
 
 .map-room:hover {
     transform: scale(1.05);
     border-color: var(--teal);
     z-index: 3
+}
+
+.map-room.highlighted {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 4px #138b8738;
+    transform: scale(1.06);
+    z-index: 4
+}
+
+.map-wing, .you-are-here {
+    position: absolute;
+    z-index: 2;
+    font: 700 10px 'Space Grotesk';
+    letter-spacing: .08em;
+    text-transform: uppercase
+}
+
+.north-wing {
+    top: 8px;
+    left: 12px;
+    color: var(--teal-dark)
+}
+
+.south-wing {
+    bottom: 8px;
+    left: 12px;
+    color: var(--orange)
+}
+
+.you-are-here {
+    top: 8px;
+    right: 12px;
+    color: var(--red);
+    text-transform: none;
+    letter-spacing: 0
+}
+
+.map-canvas {
+    height: 390px;
+    margin: 18px;
+    background-color: #f3f7f6;
+    background-image: linear-gradient(#dce9e7 1px, transparent 1px), linear-gradient(90deg, #dce9e7 1px, transparent 1px);
+    background-size: 30px 30px;
+    border: 1px solid #d9e5e3;
+    position: relative
+}
+
+.map-controls {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 15px;
+    margin-bottom: 18px
+}
+
+.map-stats {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    padding: 4px
+}
+
+.map-stats .stat-item {
+    display: grid;
+    grid-template-columns: 34px auto;
+    grid-template-rows: auto auto;
+    column-gap: 10px;
+    min-width: 190px;
+    padding: 12px 15px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    box-shadow: var(--shadow)
+}
+
+.map-stats .stat-item span {
+    grid-column: 2;
+    grid-row: 1;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .6px
+}
+
+.map-stats .stat-item strong {
+    grid-column: 2;
+    grid-row: 2;
+    font: 700 24px 'Space Grotesk';
+    color: var(--ink)
+}
+
+.map-stats .stat-item::before {
+    content: '';
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    width: 34px;
+    height: 34px;
+    align-self: center;
+    border-radius: 50%;
+    background: #e4f4f1;
+    box-shadow: inset 0 0 0 7px #f2fbf9
+}
+
+.map-stats .stat-item:nth-child(2)::before {
+    background: #fff0df;
+    box-shadow: inset 0 0 0 7px #fff8ef
+}
+
+.color-legend {
+    display: flex;
+    gap: 20px;
+    margin-top: 18px;
+    padding: 12px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 6px
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px
+}
+
+.legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    border: 1px solid var(--line)
+}
+
+.legend-color.occupied {
+    background: #fff4ea;
+    border-color: var(--orange)
+}
+
+.legend-color.not-occupied {
+    background: #fff;
+    border-color: var(--line)
+}
+
+.map-room.type-highlighted {
+    background: #d9f5ef;
+    border-color: var(--teal);
+    box-shadow: 0 0 0 4px #138b8738, 0 8px 18px #138b8726;
+    transform: scale(1.06);
+    z-index: 5
+}
+
+.map-room.type-dimmed {
+    opacity: .38
+}
+
+.map-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    background: #19383b66
+}
+
+.map-modal-backdrop[hidden] {
+    display: none
+}
+
+.map-modal {
+    position: relative;
+    width: min(520px, 100%);
+    max-height: min(680px, 90vh);
+    overflow-y: auto;
+    padding: 28px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: 0 24px 70px #19383b40
+}
+
+.map-modal-close {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    font-size: 24px;
+    line-height: 1
+}
+
+.popup-kicker {
+    color: var(--teal-dark);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase
+}
+
+.map-modal h2 {
+    margin: 6px 0 12px;
+    font: 600 22px 'Space Grotesk'
+}
+
+.popup-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    color: var(--muted);
+    font-size: 11px
+}
+
+.popup-status {
+    display: inline-block;
+    padding: 5px 9px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 700
+}
+
+.popup-status.occupied {
+    color: #a9622e;
+    background: #fff0df
+}
+
+.popup-status.available,
+.popup-status.present {
+    color: #25836f;
+    background: #e3f6ed
+}
+
+.popup-location,
+.popup-link {
+    font-size: 12px
+}
+
+.popup-link,
+.room-faculty-item a {
+    display: inline-block;
+    margin-top: 8px;
+    color: var(--teal-dark);
+    font-size: 11px;
+    font-weight: 700
+}
+
+.popup-section {
+    padding-top: 18px;
+    border-top: 1px solid var(--line)
+}
+
+.room-faculty-list {
+    display: grid;
+    gap: 10px;
+    margin-top: 10px
+}
+
+.room-faculty-item {
+    display: grid;
+    gap: 3px;
+    padding: 10px 0;
+    border-top: 1px solid var(--line)
+}
+
+.room-faculty-item span {
+    color: var(--muted);
+    font-size: 11px
+}
+
+.faculty-presence-item span {
+    font-size: 11px;
+    font-weight: 700
+}
+
+.presence-status.in-session {
+    color: var(--teal-dark)
+}
+
+.presence-status.present {
+    color: var(--blue)
+}
+
+.presence-status.rest-day {
+    color: var(--muted)
+}
+
+@media (max-width: 760px) {
+    .map-controls {
+        grid-template-columns: 1fr
+    }
+
+    .map-stats .stat-item {
+        min-width: 0;
+        flex: 1 1 180px
+    }
+
+    .map-canvas {
+        height: min(62vh, 430px);
+        margin: 12px
+    }
 }
 
 .map-note {
@@ -20,3 +342,4 @@
     font-size: 11px;
     color: var(--teal)
 }
+

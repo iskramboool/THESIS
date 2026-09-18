@@ -27,3 +27,266 @@
 .profile-request {
     margin-top: 18px
 }
+
+@media (max-width: 760px) {
+    .faculty-dashboard,
+    .faculty-dashboard .grid,
+    .faculty-dashboard .grid-2,
+    .faculty-dashboard > .grid-2 {
+        width: 100%;
+        min-width: 0
+    }
+
+    .page > .grid-2 {
+        width: 100%;
+        min-width: 0
+    }
+
+    .faculty-dashboard .grid-2 > .card,
+    .faculty-dashboard .presence-card,
+    .faculty-dashboard .qr-panel {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        overflow: hidden
+    }
+
+    .page > .grid-2 > .card {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        overflow: hidden
+    }
+
+    .page > .grid-2 .qr-panel .data-table {
+        width: 100%;
+        min-width: 0;
+        table-layout: fixed
+    }
+
+    .page > .grid-2 .qr-panel .data-table th,
+    .page > .grid-2 .qr-panel .data-table td {
+        min-width: 0;
+        padding: 10px 6px;
+        overflow-wrap: anywhere
+    }
+
+    .page > .grid-2 .qr-panel .data-table th:first-child,
+    .page > .grid-2 .qr-panel .data-table td:first-child {
+        width: 52%
+    }
+
+    .page > .grid-2 .qr-panel .data-table th:nth-child(2),
+    .page > .grid-2 .qr-panel .data-table td:nth-child(2) {
+        width: 20%
+    }
+
+    .page > .grid-2 .qr-panel .data-table th:last-child,
+    .page > .grid-2 .qr-panel .data-table td:last-child {
+        width: 28%
+    }
+
+    .faculty-dashboard .card-header {
+        flex-wrap: wrap;
+        gap: 10px
+    }
+
+    .faculty-dashboard .table-wrap {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto
+    }
+}
+
+/* Faculty Portal Portrait-Friendly Layout */
+.faculty-portal-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 18px
+}
+
+.faculty-portal-layout > .page-heading {
+    align-items: flex-start;
+    gap: 18px
+}
+
+.portal-heading-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+    flex: 0 0 auto
+}
+
+.role-profile-picture {
+    display: block;
+    width: 42px;
+    height: 42px;
+    margin-bottom: 8px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #c9e7e1
+}
+
+.faculty-portal-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    width: 100%;
+    min-width: 0
+}
+
+.faculty-portal-layout,
+.faculty-portal-content > .card,
+.faculty-portal-content .table-wrap {
+    min-width: 0;
+    max-width: 100%
+}
+
+.faculty-portal-content .table-wrap {
+    overflow-x: auto
+}
+
+@media (max-width: 768px) and (orientation: portrait) {
+    .faculty-portal-layout {
+        width: 100%;
+        min-width: 0
+    }
+
+    .faculty-portal-layout > .page-heading {
+        width: 100%;
+        flex-direction: column;
+        gap: 12px
+    }
+
+    .portal-heading-actions {
+        width: 100%;
+        justify-content: flex-start
+    }
+
+    .faculty-portal-content {
+        grid-template-columns: 1fr
+    }
+    
+    .presence-card {
+        order: 1
+    }
+    
+    .qr-panel {
+        order: 2
+    }
+    
+    .qr-code {
+        width: 180px;
+        height: 180px;
+        font-size: 24px;
+        padding: 20px;
+        margin: 15px auto
+    }
+    
+    .presence-card h2,
+    .qr-panel h2 {
+        font-size: 18px
+    }
+
+    .faculty-portal-content .data-table {
+        min-width: 620px
+    }
+}
+
+/* Edit Modal Styles */
+@media (orientation: portrait) {
+    .faculty-portal-page .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 25
+    }
+}
+
+.edit-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    width: 90%;
+    max-width: 500px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    padding: 20px
+}
+
+.settings-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    width: min(90%, 560px);
+    max-height: 90vh;
+    overflow-y: auto;
+    background: #fff;
+    padding: 20px
+}
+
+.profile-picture-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 15px
+}
+
+#profile-picture-preview {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid var(--line)
+}
+
+.edit-modal .card-header {
+    margin-bottom: 20px
+}
+
+.edit-modal form {
+    margin-top: 15px
+}
+
+.time-input-row {
+    display: flex;
+    align-items: center;
+    gap: 8px
+}
+
+.time-input-row input {
+    min-width: 0;
+    flex: 1
+}
+
+.set-time-btn {
+    flex: 0 0 auto;
+    padding: 10px 12px
+}
+
+.edit-modal button[type="submit"] {
+    width: 100%;
+    margin-top: 15px
+}
+
+.settings-modal button[type="submit"] {
+    width: 100%;
+    margin-top: 15px
+}
+
+@media (max-width: 520px) {
+    .profile-picture-row {
+        align-items: flex-start;
+        flex-direction: column
+    }
+
+    .settings-modal .form-grid {
+        grid-template-columns: 1fr
+    }
+}

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Classroom Verification | Campus Locate</title>
+    <title>System Status | Campus Locate</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link
         href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
@@ -17,7 +17,60 @@
     <div id="app"></div>
     <script src="../js/common.js"></script>
     <script src="../js/super-admin.js"></script>
-    <script>if (requireRole(['super_admin'])) { renderPage('Classroom Verification', 'Classroom verification', `<div class="page"><div class="page-heading"><div><p class="eyebrow">ESP32 sensor status</p><h1>Classroom verification.</h1><p class="subheading">Active means the sensor currently detects people or activity. It does not simply mean the room exists.</p></div></div><div class="card"><table class="data-table"><thead><tr><th>Room</th><th>Floor</th><th>Sensor</th><th>Detected activity</th><th>Status</th><th>Verify</th></tr></thead><tbody>${roomStore.slice(0, 12).map(r => `<tr><td>${r.room}</td><td>${r.floor}F</td><td><span class="sensor-live">ESP32-${r.room}</span></td><td>${r.status === 'Active' ? 'Occupied' : 'No activity'}</td><td><span class="badge ${r.status === 'Active' ? 'active' : 'inactive'}">${r.status}</span></td><td><button class="outline" onclick="toast('Sensor status verified')">Verify</button></td></tr>`).join('')}</tbody></table></div></div>`) }</script>
+    <script>
+    if (requireRole(['super_admin'])) { 
+        // DATABASE: In production, fetch real-time system status from database
+        renderPage('System Status', 'System status', 
+        `<div class="page">
+            <div class="page-heading">
+                <div>
+                    <p class="eyebrow">ESP32 sensor status</p>
+                    <h1>System status.</h1>
+                    <p class="subheading">Monitor system connectivity and sensor activity in real-time.</p>
+                </div>
+            </div>
+            <div class="card">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Components</th>
+                            <th>Floor</th>
+                            <th>Room</th>
+                            <th>Detected Activity</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${roomStore.slice(0, 12).map(r => `
+                        <tr>
+                            <td>ESP32-CAM</td>
+                            <td>${r.floor}F</td>
+                            <td>${r.room}</td>
+                            <td>${r.status === 'Active' ? 'Active' : 'Not Active'}</td>
+                            <td><span class="badge ${r.status === 'Active' ? 'active' : 'inactive'}">${r.status === 'Active' ? 'Connected' : 'Disconnected'}</span></td>
+                            <td><button class="outline edit-system-btn" data-room="${r.room}" data-floor="${r.floor}">Edit</button></td>
+                        </tr>`).join('')}
+                    </tbody>
+                </table>
+            </div>
+        </div>`); 
+        
+        // Edit system button
+        document.querySelectorAll('.edit-system-btn').forEach(btn => {
+            btn.onclick = () => {
+                const room = btn.dataset.room;
+                const floor = btn.dataset.floor;
+                // DATABASE: In production, this would open an edit form for system configuration
+                const newRoom = prompt('Enter new room:', room);
+                const newFloor = prompt('Enter new floor (1-4):', floor);
+                
+                if (newRoom && newFloor) {
+                    toast(`System configuration updated: Room ${newRoom}, Floor ${newFloor}`);
+                }
+            };
+        });
+    }</script>
 </body>
 
 </html>

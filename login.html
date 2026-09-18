@@ -15,23 +15,43 @@
 
 <body>
     <main class="login-page">
-        <form class="login-card" id="login-form"><a class="role-choice" href="index.html">← Change user type</a>
-            <h1>Welcome back</h1>
-            <p>Sign in as <strong id="login-role">Faculty</strong> to continue.</p>
-            <div class="field"><label for="name">Name</label><input id="name" required placeholder="Your full name">
+        <form class="login-card" id="login-form">
+            <a class="role-choice" href="index.html">← Change user type</a>
+            <h1 id="auth-title">Welcome back</h1>
+                <p id="auth-description">Sign in as <strong id="login-role">Faculty</strong> to continue.</p>
+            <div class="field verification-field" hidden>
+                <label for="verification">Security verification</label>
+                <input id="verification" type="password" placeholder="Enter verification password">
+                <small>Prototype verification only. Production must validate this on the server.</small>
             </div>
-            <div class="field"><label for="department">Department</label><select id="department" required></select>
+            <div class="field">
+                <label for="name">Name</label>
+                <input id="name" required placeholder="Your full name">
             </div>
-            <div class="field"><label for="title">Title</label><select id="title" required>
+            <div class="field">
+                <label for="department">Department</label>
+                <select id="department" required></select>
+            </div>
+            <div class="field">
+                <label for="title">Title</label>
+                <select id="title" required>
                     <option value="">Select title</option>
                     <option>Full-time Instructor</option>
                     <option>Part-time Instructor</option>
                     <option>Program Chairperson</option>
-                </select></div>
-            <div class="field"><label for="password">Password</label><input id="password" type="password" required
-                    placeholder="Enter password"></div><button class="primary" type="submit">Sign in securely</button>
-            <p class="footer-note">Prototype credentials are validated in the browser only. Production deployment must
-                use server-side hashing and sessions.</p>
+                </select>
+            </div>
+            <div class="field">
+                <label for="password">Password</label>
+                <input id="password" type="password" required placeholder="Enter password">
+            </div>
+            <div class="field confirm-field" hidden>
+                <label for="confirm-password">Confirm password</label>
+                <input id="confirm-password" type="password" placeholder="Confirm password">
+            </div>
+            <button class="primary" type="submit">Sign in securely</button>
+            <button class="role-choice auth-switch" type="button" hidden>Create account instead</button>
+            <p class="footer-note">Browser storage is used only while the backend is unavailable. Production must use server-side hashing and sessions.</p>
         </form>
         <div class="toast"></div>
     </main>

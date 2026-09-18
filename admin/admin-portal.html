@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Admin Portal | Campus Locate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+
+<body data-root="../">
+    <div id="app"></div>
+    <script src="../js/common.js"></script>
+    <script>if (requireRole(['admin'])) { 
+        const s = getSession(); 
+        
+        // DATABASE: In production, fetch faculty list and notifications from database
+        const pendingRequests = getSchedules().filter(x => x.status === 'pending' && x.department === s.department);
+        
+        renderPage('Admin Portal', 'Admin portal', 
+        `<div class="page">
+            <div class="page-heading">
+                <div>
+                    <p class="eyebrow">Admin workspace · ${s.department}</p>
+                    <h1>Admin Portal.</h1>
+                    <p class="subheading">Manage faculty requests, schedules, and approvals.</p>
+                </div>
+                <div class="notification-section">
+                    <button class="primary notification-btn" id="notification-btn">
+                        🔔 <span class="notification-count">${pendingRequests.length}</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="card notifications-panel" id="notifications-panel" style="display: ${pendingRequests.length ? 'block' : 'none'}">
+                <div class="card-header">
+                    <div>
+                        <h2>Pending Requests</h2>
+                        <p>Faculty requests requiring Admin confirmation.</p>
+                    </div>
+                </div>
+                <div class="notifications-list">
+                    ${pendingRequests.length ? pendingRequests.map(req => `
+                        <div class="notification-item" data-id="${req.id}">
+                            <div class="notification-header">
+                                <strong>${escapeHtml(req.faculty)}</strong>
+                                <span class="badge pending">Pending</span>
+                            </div>
+                            <div class="notification-details">
+                                <p><strong>Request Type:</strong> Schedule Change</p>
+                                <p><strong>Subject:</strong> ${escapeHtml(req.subject)}</p>
+                                <p><strong>Room:</strong> ${escapeHtml(req.room)}</p>
+                                <p><strong>Time:</strong> ${escapeHtml(req.start)} – ${escapeHtml(req.end)}</p>
+                                <p><strong>Days:</strong> ${req.days.join(', ')}</p>
+                            </div>
+                            <div class="notification-actions">
+                                <button class="primary approve-btn" data-id="${req.id}">Approve</button>
+                                <button class="danger reject-btn" data-id="${req.id}">Reject</button>
+                                <button class="outline edit-request-btn" data-id="${req.id}">Edit</button>
+                            </div>
+                        </div>
+                    `).join('') : '<p class="empty">No pending requests.</p>'}
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h2>Faculty List</h2>
+                        <p>All faculty members in ${s.department}</p>
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Title</th>
+                                <th>Campus status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${[...new Map(getSchedules().filter(x => x.department === s.department).map(x => [x.faculty, x])).values()].map(p => `
+                                <tr>
+                                    <td>${escapeHtml(p.faculty)}</td>
+                                    <td>${escapeHtml(p.title)}</td>
+                                    <td><span class="badge present">Present</span></td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="card" style="margin-top:18px">
+                <div class="card-header">
+                    <div>
+                        <h2>Attendance Management</h2>
+                        <p>Edit faculty attendance status (Present, In Session, Rest Day).</p>
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Faculty</th>
+                                <th>Title</th>
+                                <th>Current Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendance-table-body">
+                            ${[...new Map(getSchedules().filter(x => x.department === s.department).map(x => [x.faculty, x])).values()].map(faculty => {
+                                const savedStatuses = JSON.parse(localStorage.getItem('facultyPresence') || '{}');
+                                const currentStatus = savedStatuses[faculty.faculty] || 'present';
+                                const statusClass = currentStatus === 'in-session' ? 'present' : currentStatus;
+                                const statusText = currentStatus.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
+                                
+                                return `
+                                    <tr>
+                                        <td>${escapeHtml(faculty.faculty)}</td>
+                                        <td>${escapeHtml(faculty.title)}</td>
+                                        <td><span class="badge ${statusClass}">${statusText}</span></td>
+                                        <td><button class="outline edit-attendance-btn" data-faculty="${escapeHtml(faculty.faculty)}">Edit</button></td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Edit Schedule Modal for Admin -->
+            <div class="card edit-modal" id="admin-edit-modal" style="display:none">
+                <div class="card-header">
+                    <div>
+                        <h2>Edit Faculty Schedule</h2>
+                        <p>Admin can modify approved schedules.</p>
+                    </div>
+                    <button class="outline" id="close-admin-edit-modal">Close</button>
+                </div>
+                <form id="admin-edit-form">
+                    <input type="hidden" id="admin-edit-id">
+                    <div class="form-grid">
+                        <div class="field">
+                            <label for="admin-edit-subject">Subject</label>
+                            <input id="admin-edit-subject" type="text" required>
+                        </div>
+                        <div class="field">
+                            <label for="admin-edit-code">Code</label>
+                            <input id="admin-edit-code" type="text" required>
+                        </div>
+                        <div class="field">
+                            <label for="admin-edit-room">Room</label>
+                            <select id="admin-edit-room" required>
+                                ${optionList(ROOMS)}
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label for="admin-edit-status">Status</label>
+                            <select id="admin-edit-status" required>
+                                <option value="present">Present</option>
+                                <option value="pending">Pending</option>
+                                <option value="rejected">Rejected</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="primary" type="submit">Save Changes</button>
+                </form>
+            </div>
+            
+            <!-- Edit Attendance Modal -->
+            <div class="card edit-modal" id="edit-attendance-modal" style="display:none">
+                <div class="card-header">
+                    <div>
+                        <h2>Edit Attendance Status</h2>
+                        <p>Change faculty attendance status.</p>
+                    </div>
+                    <button class="outline" id="close-attendance-modal">Close</button>
+                </div>
+                <form id="edit-attendance-form">
+                    <input type="hidden" id="edit-attendance-faculty">
+                    <div class="field">
+                        <label for="edit-attendance-status">Attendance Status</label>
+                        <select id="edit-attendance-status" required>
+                            <option value="Present">Present</option>
+                            <option value="In Session">In Session</option>
+                            <option value="Rest Day">Rest Day</option>
+                            <option value="Not Present">Not Present</option>
+                        </select>
+                    </div>
+                    <button class="primary" type="submit">Update Status</button>
+                </form>
+            </div>
+        </div>`);
+        
+        // Notification button toggle
+        document.querySelector('#notification-btn').onclick = () => {
+            const panel = document.querySelector('#notifications-panel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        };
+        
+        // Approve button
+        document.querySelectorAll('.approve-btn').forEach(btn => {
+            btn.onclick = () => {
+                const id = Number(btn.dataset.id);
+                const data = getSchedules();
+                const item = data.find(s => s.id === id);
+                if (item) {
+                    item.status = 'present'; // Changed from 'approved' to 'present'
+                    saveSchedules(data);
+                    toast('Schedule approved and set to Present.');
+                    location.reload();
+                }
+            };
+        });
+        
+        // Reject button
+        document.querySelectorAll('.reject-btn').forEach(btn => {
+            btn.onclick = () => {
+                const id = Number(btn.dataset.id);
+                const data = getSchedules();
+                const item = data.find(s => s.id === id);
+                if (item) {
+                    item.status = 'rejected';
+                    saveSchedules(data);
+                    toast('Schedule rejected.');
+                    location.reload();
+                }
+            };
+        });
+        
+        // Edit request button - opens admin edit modal
+        document.querySelectorAll('.edit-request-btn').forEach(btn => {
+            btn.onclick = () => {
+                const id = Number(btn.dataset.id);
+                const schedule = getSchedules().find(s => s.id === id);
+                
+                if (schedule) {
+                    // Populate the admin edit form with current values
+                    document.querySelector('#admin-edit-id').value = schedule.id;
+                    document.querySelector('#admin-edit-subject').value = schedule.subject;
+                    document.querySelector('#admin-edit-code').value = schedule.code;
+                    document.querySelector('#admin-edit-room').value = schedule.room;
+                    document.querySelector('#admin-edit-status').value = schedule.status;
+                    
+                    // Show the admin edit modal
+                    document.querySelector('#admin-edit-modal').style.display = 'block';
+                }
+            };
+        });
+        
+        // Close admin edit modal
+        document.querySelector('#close-admin-edit-modal').onclick = () => {
+            document.querySelector('#admin-edit-modal').style.display = 'none';
+            document.querySelector('#admin-edit-form').reset();
+        };
+        
+        // Handle admin edit form submission
+        document.querySelector('#admin-edit-form').onsubmit = (e) => {
+            e.preventDefault();
+            
+            const scheduleId = Number(document.querySelector('#admin-edit-id').value);
+            const newSubject = document.querySelector('#admin-edit-subject').value;
+            const newCode = document.querySelector('#admin-edit-code').value;
+            const newRoom = document.querySelector('#admin-edit-room').value;
+            const newStatus = document.querySelector('#admin-edit-status').value;
+            
+            // DATABASE: In production, this would update the database directly
+            const data = getSchedules();
+            const scheduleIndex = data.findIndex(s => s.id === scheduleId);
+            
+            if (scheduleIndex !== -1) {
+                // Update the schedule
+                data[scheduleIndex] = {
+                    ...data[scheduleIndex],
+                    subject: newSubject,
+                    code: newCode,
+                    room: newRoom,
+                    status: newStatus
+                };
+                
+                saveSchedules(data);
+                toast('Schedule updated successfully.');
+                
+                // Close modal and refresh the page
+                document.querySelector('#admin-edit-modal').style.display = 'none';
+                document.querySelector('#admin-edit-form').reset();
+                location.reload();
+            }
+        };
+    }</script>
+</body>
+
+</html>

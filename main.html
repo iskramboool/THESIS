@@ -1,46 +1,342 @@
 <!doctype html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Campus Locate | Smart School Map</title>
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+	<link
+		href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+		rel="stylesheet">
 	<link rel="stylesheet" href="main.css">
 </head>
+
 <body>
 	<div class="app-shell">
 		<aside class="sidebar">
-			<div class="brand"><div class="brand-mark"><span></span><span></span><span></span><span></span></div><div><strong>campus<span>locate</span></strong><small>SMART SCHOOL MAP</small></div></div>
-			<div class="profile-mini"><div class="avatar avatar-blue">AM</div><div><strong>Alex Morgan</strong><span>Student account</span></div><button class="icon-button" aria-label="More profile options">•••</button></div>
-			<nav class="main-nav" aria-label="Main navigation"><p class="nav-label">Workspace</p><button class="nav-item active" data-view="student"><span class="nav-icon">⌖</span>Live campus map</button><button class="nav-item" data-view="faculty"><span class="nav-icon">▣</span>Faculty portal</button><button class="nav-item" data-view="admin"><span class="nav-icon">▦</span>Admin overview</button><p class="nav-label nav-spaced">Manage</p><button class="nav-item"><span class="nav-icon">◷</span>Saved locations</button><button class="nav-item"><span class="nav-icon">?</span>Help center</button></nav>
-			<div class="sidebar-bottom"><div class="sync-status"><span class="live-dot"></span><div><strong>System live</strong><span>Updated just now</span></div></div><button class="logout-button">↪ <span>Sign out</span></button></div>
+			<div class="brand">
+				<div class="brand-mark">
+					<span></span><span></span><span></span><span></span>
+				</div>
+				<div>
+					<strong>campus<span>locate</span></strong>
+					<small>SMART SCHOOL MAP</small>
+				</div>
+			</div>
+			<div class="profile-mini">
+				<div class="avatar avatar-blue">AM</div>
+				<div>
+					<strong>Alex Morgan</strong>
+					<span>Student account</span>
+				</div>
+				<button class="icon-button" aria-label="More profile options">•••</button>
+			</div>
+			<nav class="main-nav" aria-label="Main navigation">
+				<p class="nav-label">Workspace</p>
+				<button class="nav-item active" data-view="student">
+					<span class="nav-icon">⌖</span>
+					Live campus map
+				</button>
+				<button class="nav-item" data-view="faculty">
+					<span class="nav-icon">▣</span>
+					Faculty portal
+				</button>
+				<button class="nav-item" data-view="admin">
+					<span class="nav-icon">▦</span>
+					Admin overview
+				</button>
+				<p class="nav-label nav-spaced">Manage</p>
+				<button class="nav-item">
+					<span class="nav-icon">◷</span>
+					Saved locations
+				</button>
+				<button class="nav-item">
+					<span class="nav-icon">?</span>
+					Help center
+				</button>
+			</nav>
+			<div class="sidebar-bottom">
+				<div class="sync-status">
+					<span class="live-dot"></span>
+					<div>
+						<strong>System live</strong>
+						<span>Updated just now</span>
+					</div>
+				</div>
+				<button class="logout-button">↪ <span>Sign out</span></button>
+			</div>
 		</aside>
 		<main class="content">
-			<header class="topbar"><button class="mobile-menu" aria-label="Open menu">☰</button><div class="breadcrumb"><span>Workspace</span><b>/</b><strong id="breadcrumb-current">Live campus map</strong></div><div class="top-actions"><button class="notification" aria-label="Notifications">♢<i></i></button><div class="top-avatar">AM</div></div></header>
+			<header class="topbar">
+				<button class="mobile-menu" aria-label="Open menu">☰</button>
+				<div class="breadcrumb">
+					<span>Workspace</span><b>/</b><strong id="breadcrumb-current">Live campus map</strong>
+				</div>
+				<div class="top-actions">
+					<button class="notification" aria-label="Notifications">♢<i></i></button>
+					<div class="top-avatar">AM</div>
+				</div>
+			</header>
 			<section class="view-section active-view" id="student-view">
-				<div class="page-heading"><div><p class="eyebrow">Tuesday, September 15, 2026 <span class="live-dot"></span> Live updates</p><h1>Find your way around campus.</h1><p class="subheading">Locate faculty, classrooms, and active sessions across the building.</p></div><div class="heading-actions"><button class="outline-button" id="refresh-map">↻ <span>Refresh map</span></button><button class="primary-button" id="directions-button">⌁ <span>Get directions</span></button></div></div>
-				<div class="stats-row"><div class="stat-card"><div class="stat-icon teal">◉</div><div><span>Faculty on campus</span><strong id="faculty-count">18 <small>/ 24</small></strong></div><em class="trend up">↑ 4.2%</em></div><div class="stat-card"><div class="stat-icon orange">▦</div><div><span>Active classrooms</span><strong>31 <small>/ 42</small></strong></div><em class="trend neutral">Steady</em></div><div class="stat-card"><div class="stat-icon blue">◷</div><div><span>Next class change</span><strong>10 <small>min</small></strong></div><em class="trend blue-text">09:30 AM</em></div><div class="stat-card campus-health"><div class="health-ring"><span>87%</span></div><div><span>Campus activity</span><strong>Healthy</strong></div></div></div>
-				<div class="map-layout"><section class="map-panel"><div class="panel-header map-header"><div><h2>Building A · Main campus</h2><p>Choose a floor to explore rooms and live sessions.</p></div><div class="map-tools"><button class="tool-button" id="zoom-out" aria-label="Zoom out">−</button><span id="zoom-level">100%</span><button class="tool-button" id="zoom-in" aria-label="Zoom in">+</button><button class="tool-button" id="reset-map" aria-label="Reset map">⟳</button></div></div><div class="floor-tabs" role="tablist"><button class="floor-tab active" data-floor="1">01 <span>First floor</span></button><button class="floor-tab" data-floor="2">02 <span>Second floor</span></button><button class="floor-tab" data-floor="3">03 <span>Third floor</span></button><button class="floor-tab" data-floor="4">04 <span>Fourth floor</span></button></div><div class="map-stage"><div class="map-canvas" id="map-canvas"><div class="map-label north">NORTH WING</div><div class="map-label south">SOUTH WING</div><div class="hallway h-one"></div><div class="hallway h-two"></div><div class="stairs stairs-left">↕<small>STAIR A</small></div><div class="stairs stairs-right">↕<small>STAIR B</small></div><div id="room-grid"></div></div><div class="map-legend"><span><i class="legend-dot available"></i>Available</span><span><i class="legend-dot occupied"></i>In session</span><span><i class="legend-dot faculty"></i>Faculty here</span><span><i class="legend-dot closed"></i>Unavailable</span></div></div></section><aside class="locator-panel"><div class="panel-header"><div><h2>Faculty locator</h2><p>Search active faculty by name or subject.</p></div><span class="live-pill"><i></i> Live</span></div><div class="search-box"><span>⌕</span><input id="faculty-search" type="search" placeholder="Search faculty or subject..." autocomplete="off"><kbd>⌘ K</kbd></div><div class="filter-row"><button class="filter-chip active">All faculty <b id="result-count">18</b></button><button class="filter-chip">Available now <b>12</b></button></div><div class="faculty-list" id="faculty-list"></div><button class="view-all" id="view-all">View all faculty <span>→</span></button></aside></div>
-				<div class="info-strip"><div class="info-symbol">i</div><div><strong>How presence works</strong><span>Faculty who have not tapped in today will not appear on the live map. Schedules update automatically every 60 seconds.</span></div><button>Learn more <span>→</span></button></div>
-			</section>
-			<section class="view-section" id="faculty-view"><div class="page-heading"><div><p class="eyebrow">Faculty portal · Tuesday, September 15</p><h1>Good morning, Dr. Rivera.</h1><p class="subheading">Keep your presence and teaching schedule up to date.</p></div><div class="heading-actions"><button class="outline-button">⚙ <span>Profile settings</span></button></div></div><div class="faculty-dashboard"><div class="tap-card"><div><span class="card-kicker">Daily presence</span><h2>You are checked in.</h2><p>Your presence is visible to students while you are on campus.</p></div><div class="tap-state"><div class="presence-orbit"><span></span>✓</div><strong>09:02 AM</strong><small>Tap-in recorded today</small></div><button class="secondary-button" id="tap-button">Tap out for the day</button></div><div class="schedule-card"><div class="panel-header"><div><h2>Today’s schedule</h2><p>3 sessions · Building A</p></div><button class="text-button">Edit schedule →</button></div><div class="schedule-list"><div class="schedule-item current"><span class="time">09:30<br><small>10:45</small></span><div><strong>Introduction to Computing</strong><span>Room 204 · 2nd floor</span></div><b>Now</b></div><div class="schedule-item"><span class="time">11:00<br><small>12:30</small></span><div><strong>Systems Analysis</strong><span>Room 310 · 3rd floor</span></div><b>Upcoming</b></div><div class="schedule-item"><span class="time">02:00<br><small>03:30</small></span><div><strong>Faculty consultation</strong><span>Faculty lounge · 1st floor</span></div><b>Later</b></div></div></div></div></section>
-			<section class="view-section" id="admin-view"><div class="page-heading"><div><p class="eyebrow">Administration · Operations center</p><h1>Campus at a glance.</h1><p class="subheading">Monitor rooms, presence, and schedule activity from one place.</p></div><button class="primary-button">＋ <span>Add faculty</span></button></div><div class="admin-grid"><div class="admin-card large"><div class="panel-header"><div><h2>Presence overview</h2><p>Daily faculty attendance · September 15</p></div><span class="status-badge good">On track</span></div><div class="bar-chart"><div style="height:74%"><span>Mon</span></div><div style="height:88%"><span>Tue</span></div><div style="height:64%"><span>Wed</span></div><div style="height:81%"><span>Thu</span></div><div style="height:91%"><span>Fri</span></div></div></div><div class="admin-card"><span class="card-kicker">Today’s presence</span><strong class="big-number">18 <small>/ 24</small></strong><div class="progress"><i style="width:75%"></i></div><p>75% of faculty have tapped in</p></div><div class="admin-card"><span class="card-kicker">Rooms in use</span><strong class="big-number">31 <small>/ 42</small></strong><div class="progress orange-progress"><i style="width:74%"></i></div><p>11 rooms available now</p></div><div class="admin-card activity-card"><div class="panel-header"><h2>Recent activity</h2><button class="text-button">View logs →</button></div><div class="activity-row"><span class="activity-avatar teal-bg">JR</span><div><strong>Prof. Javier Reyes</strong><span>Checked in · 09:07 AM</span></div><i class="success-check">✓</i></div><div class="activity-row"><span class="activity-avatar orange-bg">ML</span><div><strong>Ms. Mia Lim</strong><span>Updated schedule · 08:54 AM</span></div><i class="success-check">✓</i></div><div class="activity-row"><span class="activity-avatar blue-bg">CN</span><div><strong>Dr. Carla Navarro</strong><span>Checked in · 08:41 AM</span></div><i class="success-check">✓</i></div></div></div></section>
-		</main>
+				<div class="page-heading">
+					<div>
+						<p class="eyebrow">Tuesday, September 15, 2026 <span class="live-dot"></span> Live updates</p>
+						<h1>Find your way around campus.</h1>
+						<p class="subheading">Locate faculty, classrooms, and active sessions across the building.</p>
+					</div>
+					<div class="heading-actions">
+						<button class="outline-button" id="refresh-map">↻ <span>Refresh map</span></button>
+						<button class="primary-button" id="directions-button">⌁ <span>Get directions</span></button>
+					</div>
+				</div>
+				<div class="stats-row">
+					<div class="stat-card">
+						<div class="stat-icon teal">◉</div>
+						<div>
+							<span>Faculty on campus</span><strong id="faculty-count">18 <small>/ 24</small></strong>
+						</div>
+						<em class="trend up">↑ 4.2%</em>
+					</div>
+					<div class="stat-card">
+						<div class="stat-icon orange">▦</div>
+						<div>
+							<span>Active classrooms</span><strong>31 <small>/ 42</small></strong>
+						</div>
+						<em class="trend neutral">Steady</em>
+					</div>
+					<div class="stat-card">
+						<div class="stat-icon blue">◷</div>
+						<div>
+							<span>Next class change</span><strong>10 <small>min</small></strong>
+						</div>
+						<em class="trend blue-text">09:30 AM</em>
+					</div>
+					<div class="stat-card campus-health">
+						<div class="health-ring"><span>87%</span></div>
+						<div><span>Campus activity</span><strong>Healthy</strong></div>
+					</div>
+				</div>
+				<div class="map-layout">
+					<section class="map-panel">
+						<div class="panel-header map-header">
+							<div>
+								<h2>Building A · Main campus</h2>
+								<p>Choose a floor to explore rooms and live sessions.</p>
+							</div>
+							<div class="map-tools">
+								<button class="tool-button" id="zoom-out" aria-label="Zoom out">−</button>
+								<span id="zoom-level">100%</span>
+								<button class="tool-button" id="zoom-in" aria-label="Zoom in">+</button>
+								<button class="tool-button" id="reset-map" aria-label="Reset map">⟳</button>
+							</div>
+						</div>
+						<div class="floor-tabs" role="tablist">
+							<button class="floor-tab active" data-floor="1">01
+								<span>First floor</span>
+							</button>
+							<button class="floor-tab" data-floor="2">02
+								<span>Second floor</span>
+							</button>
+							<button class="floor-tab" data-floor="3">03
+								<span>Third floor</span>
+							</button>
+							<button class="floor-tab" data-floor="4">04
+								<span>Fourth floor</span>
+							</button>
+						</div>
+						<div class="map-stage">
+							<div class="map-canvas" id="map-canvas">
+								<div class="map-label north">NORTH WING</div>
+								<div class="map-label south">SOUTH WING</div>
+								<div class="hallway h-one"></div>
+								<div class="hallway h-two"></div>
+								<div class="stairs stairs-left">↕<small>STAIR A</small></div>
+								<div class="stairs stairs-right">↕<small>STAIR B</small></div>
+								<div id="room-grid"></div>
+							</div>
+							<div class="map-legend">
+								<span><i class="legend-dot available"></i>Available</span>
+								<span><i class="legend-dot occupied"></i>In session</span>
+								<span><i class="legend-dot faculty"></i>Faculty here</span>
+								<span><i class="legend-dot closed"></i>Unavailable</span>
+							</div>
+						</div>
+					</section>
+					<aside class="locator-panel">
+						<div class="panel-header">
+							<div>
+								<h2>Faculty locator</h2>
+								<p>Search active faculty by name or subject.</p>
+							</div>
+							<span class="live-pill"><i></i> Live</span>
+						</div>
+						<div class="search-box">
+							<span>⌕</span>
+							<input id="faculty-search" type="search" placeholder="Search faculty or subject..."
+								autocomplete="off"><kbd>⌘ K</kbd>
+						</div>
+						<div class="filter-row">
+							<button class="filter-chip active">
+								All faculty <b id="result-count">18</b>
+							</button>
+							<button class="filter-chip">
+								Available now <b>12</b>
+							</button>
+						</div>
+						<div class="faculty-list" id="faculty-list"></div>
+						<button class="view-all" id="view-all">
+							View all faculty <span>→</span>
+						</button>
+				</div>
+				</aside>
 	</div>
-	<div class="toast" id="toast">Map refreshed successfully</div><div class="room-modal" id="room-modal"><div class="modal-backdrop"></div><div class="modal-card"><button class="modal-close">×</button><div class="modal-top"><span class="room-tag" id="modal-room">ROOM 204</span><span class="status-badge good" id="modal-status">In session</span></div><h2 id="modal-title">Introduction to Computing</h2><p id="modal-professor">Dr. Elena Rivera</p><div class="modal-details"><div><span>Floor</span><strong id="modal-floor">2nd floor</strong></div><div><span>Schedule</span><strong id="modal-time">09:30 – 10:45</strong></div><div><span>Capacity</span><strong>36 seats</strong></div></div><button class="primary-button modal-direction">⌁ <span>Get directions</span></button></div></div>
+	<div class="info-strip">
+		<div class="info-symbol">i</div>
+		<div>
+			<strong>How presence works</strong>
+			<span>Faculty who have not tapped in today will not appear on the live map. Schedules update automatically
+				every 60 seconds.</span>
+		</div>
+		<button>Learn more <span>→</span></button>
+	</div>
+	</section>
+	<section class="view-section" id="faculty-view">
+		<div class="page-heading">
+			<div>
+				<p class="eyebrow">Faculty portal · Tuesday, September 15</p>
+				<h1>Good morning, Dr. Rivera.</h1>
+				<p class="subheading">Keep your presence and teaching schedule up to date.</p>
+			</div>
+			<div class="heading-actions">
+				<button class="outline-button">⚙ <span>Profile settings</span></button>
+			</div>
+		</div>
+		<div class="faculty-dashboard">
+			<div class="tap-card">
+				<div>
+					<span class="card-kicker">Daily presence</span>
+					<h2>You are checked in.</h2>
+					<p>Your presence is visible to students while you are on campus.</p>
+				</div>
+				<div class="tap-state">
+					<div class="presence-orbit">
+						<span></span>✓
+					</div>
+					<strong>09:02 AM</strong>
+					<small>Tap-in recorded today</small>
+				</div>
+				<button class="secondary-button" id="tap-button">Tap out for the day</button>
+			</div>
+			<div class="schedule-card">
+				<div class="panel-header">
+					<div>
+						<h2>Today’s schedule</h2>
+						<p>3 sessions · Building A</p>
+					</div><button class="text-button">Edit schedule →</button>
+				</div>
+				<div class="schedule-list">
+					<div class="schedule-item current"><span class="time">09:30<br><small>10:45</small></span>
+						<div><strong>Introduction to Computing</strong><span>Room 204 · 2nd floor</span></div>
+						<b>Now</b>
+					</div>
+					<div class="schedule-item"><span class="time">11:00<br><small>12:30</small></span>
+						<div><strong>Systems Analysis</strong><span>Room 310 · 3rd floor</span></div>
+						<b>Upcoming</b>
+					</div>
+					<div class="schedule-item"><span class="time">02:00<br><small>03:30</small></span>
+						<div><strong>Faculty consultation</strong><span>Faculty lounge · 1st floor</span></div>
+						<b>Later</b>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<section class="view-section" id="admin-view">
+		<div class="page-heading">
+			<div>
+				<p class="eyebrow">Administration · Operations center</p>
+				<h1>Campus at a glance.</h1>
+				<p class="subheading">Monitor rooms, presence, and schedule activity from one place.</p>
+			</div><button class="primary-button">＋ <span>Add faculty</span></button>
+		</div>
+		<div class="admin-grid">
+			<div class="admin-card large">
+				<div class="panel-header">
+					<div>
+						<h2>Presence overview</h2>
+						<p>Daily faculty attendance · September 15</p>
+					</div><span class="status-badge good">On track</span>
+				</div>
+				<div class="bar-chart">
+					<div style="height:74%"><span>Mon</span></div>
+					<div style="height:88%"><span>Tue</span></div>
+					<div style="height:64%"><span>Wed</span></div>
+					<div style="height:81%"><span>Thu</span></div>
+					<div style="height:91%"><span>Fri</span></div>
+				</div>
+			</div>
+			<div class="admin-card"><span class="card-kicker">Today’s presence</span><strong class="big-number">18
+					<small>/ 24</small></strong>
+				<div class="progress"><i style="width:75%"></i></div>
+				<p>75% of faculty have tapped in</p>
+			</div>
+			<div class="admin-card"><span class="card-kicker">Rooms in use</span><strong class="big-number">31
+					<small>/ 42</small></strong>
+				<div class="progress orange-progress"><i style="width:74%"></i></div>
+				<p>11 rooms available now</p>
+			</div>
+			<div class="admin-card activity-card">
+				<div class="panel-header">
+					<h2>Recent activity</h2><button class="text-button">View logs →</button>
+				</div>
+				<div class="activity-row"><span class="activity-avatar teal-bg">JR</span>
+					<div><strong>Prof. Javier Reyes</strong><span>Checked in · 09:07 AM</span></div><i
+						class="success-check">✓</i>
+				</div>
+				<div class="activity-row"><span class="activity-avatar orange-bg">ML</span>
+					<div><strong>Ms. Mia Lim</strong><span>Updated schedule · 08:54 AM</span></div><i
+						class="success-check">✓</i>
+				</div>
+				<div class="activity-row"><span class="activity-avatar blue-bg">CN</span>
+					<div><strong>Dr. Carla Navarro</strong><span>Checked in · 08:41 AM</span></div><i
+						class="success-check">✓</i>
+				</div>
+			</div>
+		</div>
+	</section>
+	</main>
+	</div>
+	<div class="toast" id="toast">Map refreshed successfully</div>
+	<div class="room-modal" id="room-modal">
+		<div class="modal-backdrop"></div>
+		<div class="modal-card"><button class="modal-close">×</button>
+			<div class="modal-top"><span class="room-tag" id="modal-room">ROOM 204</span><span class="status-badge good"
+					id="modal-status">In session</span></div>
+			<h2 id="modal-title">Introduction to Computing</h2>
+			<p id="modal-professor">Dr. Elena Rivera</p>
+			<div class="modal-details">
+				<div><span>Floor</span><strong id="modal-floor">2nd floor</strong></div>
+				<div><span>Schedule</span><strong id="modal-time">09:30 – 10:45</strong></div>
+				<div><span>Capacity</span><strong>36 seats</strong></div>
+			</div><button class="primary-button modal-direction">⌁ <span>Get directions</span></button>
+		</div>
+	</div>
 	<script>
-		const faculty = [{ name:'Dr. Elena Rivera',role:'Computer Science',room:'204',floor:2,subject:'Introduction to Computing',time:'09:30 – 10:45',color:'teal',initials:'ER',status:'In session' },{ name:'Prof. Javier Reyes',role:'Information Systems',room:'310',floor:3,subject:'Systems Analysis',time:'11:00 – 12:30',color:'orange',initials:'JR',status:'In session' },{ name:'Ms. Mia Lim',role:'Mathematics',room:'108',floor:1,subject:'Calculus II',time:'09:00 – 10:30',color:'blue',initials:'ML',status:'Available' },{ name:'Dr. Carla Navarro',role:'Physics',room:'402',floor:4,subject:'Applied Physics',time:'10:00 – 11:30',color:'purple',initials:'CN',status:'In session' }];
-		const rooms={1:[['101',7,20,'Auditorium','occupied'],['108',7,58,'Calculus II','faculty'],['110',27,20,'Room 110','available'],['114',27,58,'Room 114','available'],['118',72,20,'Student lounge','available'],['120',72,58,'Room 120','closed']],2:[['201',7,20,'Room 201','available'],['204',7,58,'Dr. Rivera','faculty'],['206',27,20,'Room 206','occupied'],['210',27,58,'Room 210','available'],['214',72,20,'Room 214','available'],['218',72,58,'Room 218','available']],3:[['301',7,20,'Room 301','available'],['305',7,58,'Room 305','available'],['310',27,20,'Prof. Reyes','faculty'],['314',27,58,'Room 314','occupied'],['318',72,20,'Room 318','available'],['322',72,58,'Room 322','available']],4:[['401',7,20,'Room 401','available'],['402',7,58,'Dr. Navarro','faculty'],['406',27,20,'Room 406','available'],['410',27,58,'Room 410','occupied'],['414',72,20,'Room 414','available'],['418',72,58,'Room 418','available']]};
-		let currentFloor=1, zoom=100, checkedIn=true; const $=s=>document.querySelector(s);
-		function renderRooms(){const grid=$('#room-grid');grid.innerHTML='';rooms[currentFloor].forEach(room=>{const el=document.createElement('button');el.className=`room room-${room[4]}`;el.dataset.room=room[0];el.style.left=room[1]+'%';el.style.top=room[2]+'%';el.innerHTML=`<span class="room-number">${room[0]}</span><span>${room[3]}</span><i></i>`;el.addEventListener('click',()=>openRoom(room));grid.appendChild(el);});}
-		function renderFaculty(query=''){const list=$('#faculty-list'),matches=faculty.filter(p=>checkedIn||p.name!=='Dr. Elena Rivera').filter(p=>(p.name+p.role+p.subject).toLowerCase().includes(query.toLowerCase()));$('#result-count').textContent=matches.length;list.innerHTML=matches.map(p=>`<button class="faculty-item" data-room="${p.room}" data-floor="${p.floor}"><div class="avatar avatar-${p.color}">${p.initials}</div><div class="faculty-copy"><strong>${p.name}</strong><span>${p.role}</span><small><i class="status-dot ${p.status==='In session'?'dot-busy':'dot-free'}"></i>${p.status} · Room ${p.room}</small></div><span class="faculty-arrow">→</span></button>`).join('')||'<div class="empty-state">No active faculty found.</div>';document.querySelectorAll('.faculty-item').forEach(item=>item.addEventListener('click',()=>locateFaculty(item.dataset.room,Number(item.dataset.floor))));}
-		function locateFaculty(room,floor){currentFloor=floor;document.querySelectorAll('.floor-tab').forEach(t=>t.classList.toggle('active',Number(t.dataset.floor)===floor));renderRooms();document.querySelector(`[data-room="${room}"]`)?.classList.add('highlighted');showToast(`Room ${room} highlighted on floor ${floor}`);}
-		function openRoom(room){const p=faculty.find(item=>item.room===room[0]);$('#modal-room').textContent=`ROOM ${room[0]}`;$('#modal-status').textContent=room[4]==='available'?'Available':room[4]==='closed'?'Unavailable':'In session';$('#modal-status').className=`status-badge ${room[4]==='closed'?'bad':room[4]==='available'?'neutral-badge':'good'}`;$('#modal-title').textContent=p?.subject||room[3];$('#modal-professor').textContent=p?.name||(room[4]==='available'?'No class scheduled':'Class in progress');$('#modal-floor').textContent=`${currentFloor}${currentFloor===1?'st':currentFloor===2?'nd':currentFloor===3?'rd':'th'} floor`;$('#modal-time').textContent=p?.time||'No schedule';$('#room-modal').classList.add('open');}
-		function showToast(message){$('#toast').textContent=message;$('#toast').classList.add('show');setTimeout(()=>$('#toast').classList.remove('show'),2400);}
-		renderRooms();renderFaculty();document.querySelectorAll('.floor-tab').forEach(tab=>tab.addEventListener('click',()=>{currentFloor=Number(tab.dataset.floor);document.querySelectorAll('.floor-tab').forEach(t=>t.classList.toggle('active',t===tab));renderRooms();}));$('#faculty-search').addEventListener('input',e=>renderFaculty(e.target.value));$('#refresh-map').addEventListener('click',()=>{renderRooms();showToast('Map refreshed successfully');});$('#zoom-in').addEventListener('click',()=>{zoom=Math.min(130,zoom+10);$('#map-canvas').style.transform=`scale(${zoom/100})`;$('#zoom-level').textContent=zoom+'%';});$('#zoom-out').addEventListener('click',()=>{zoom=Math.max(80,zoom-10);$('#map-canvas').style.transform=`scale(${zoom/100})`;$('#zoom-level').textContent=zoom+'%';});$('#reset-map').addEventListener('click',()=>{zoom=100;$('#map-canvas').style.transform='scale(1)';$('#zoom-level').textContent='100%';});$('#directions-button').addEventListener('click',()=>showToast('Select a room to begin directions'));$('#view-all').addEventListener('click',()=>{$('#faculty-search').value='';renderFaculty();showToast('Showing all active faculty');});$('#tap-button').addEventListener('click',e=>{checkedIn=!checkedIn;e.target.textContent=checkedIn?'Tap out for the day':'Tap in for the day';$('#faculty-view h2').textContent=checkedIn?'You are checked in.':'You are checked out.';$('#faculty-view .tap-card p').textContent=checkedIn?'Your presence is visible to students while you are on campus.':'Your presence is hidden from students until you tap in again.';renderFaculty();showToast(checkedIn?'You are now visible on the student map':'You are now hidden from the student map');});
-		document.querySelectorAll('.nav-item[data-view]').forEach(item=>item.addEventListener('click',()=>{const view=item.dataset.view;document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));item.classList.add('active');document.querySelectorAll('.view-section').forEach(s=>s.classList.toggle('active-view',s.id===`${view}-view`));$('#breadcrumb-current').textContent=view==='student'?'Live campus map':view==='faculty'?'Faculty portal':'Admin overview';}));document.querySelector('.modal-close').addEventListener('click',()=>$('#room-modal').classList.remove('open'));document.querySelector('.modal-backdrop').addEventListener('click',()=>$('#room-modal').classList.remove('open'));
+		const faculty = [{ name: 'Dr. Elena Rivera', role: 'Computer Science', room: '204', floor: 2, subject: 'Introduction to Computing', time: '09:30 – 10:45', color: 'teal', initials: 'ER', status: 'In session' }, { name: 'Prof. Javier Reyes', role: 'Information Systems', room: '310', floor: 3, subject: 'Systems Analysis', time: '11:00 – 12:30', color: 'orange', initials: 'JR', status: 'In session' }, { name: 'Ms. Mia Lim', role: 'Mathematics', room: '108', floor: 1, subject: 'Calculus II', time: '09:00 – 10:30', color: 'blue', initials: 'ML', status: 'Available' }, { name: 'Dr. Carla Navarro', role: 'Physics', room: '402', floor: 4, subject: 'Applied Physics', time: '10:00 – 11:30', color: 'purple', initials: 'CN', status: 'In session' }];
+		const systemDate = new Intl.DateTimeFormat(undefined, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }).format(new Date());
+		document.querySelectorAll('.eyebrow').forEach(element => { element.innerHTML = element.innerHTML.replace(/Tuesday, September 15, 2026|Tuesday, September 15|September 15/g, systemDate); });
+		const rooms = { 1: [['101', 7, 20, 'Auditorium', 'occupied'], ['108', 7, 58, 'Calculus II', 'faculty'], ['110', 27, 20, 'Room 110', 'available'], ['114', 27, 58, 'Room 114', 'available'], ['118', 72, 20, 'Student lounge', 'available'], ['120', 72, 58, 'Room 120', 'closed']], 2: [['201', 7, 20, 'Room 201', 'available'], ['204', 7, 58, 'Dr. Rivera', 'faculty'], ['206', 27, 20, 'Room 206', 'occupied'], ['210', 27, 58, 'Room 210', 'available'], ['214', 72, 20, 'Room 214', 'available'], ['218', 72, 58, 'Room 218', 'available']], 3: [['301', 7, 20, 'Room 301', 'available'], ['305', 7, 58, 'Room 305', 'available'], ['310', 27, 20, 'Prof. Reyes', 'faculty'], ['314', 27, 58, 'Room 314', 'occupied'], ['318', 72, 20, 'Room 318', 'available'], ['322', 72, 58, 'Room 322', 'available']], 4: [['401', 7, 20, 'Room 401', 'available'], ['402', 7, 58, 'Dr. Navarro', 'faculty'], ['406', 27, 20, 'Room 406', 'available'], ['410', 27, 58, 'Room 410', 'occupied'], ['414', 72, 20, 'Room 414', 'available'], ['418', 72, 58, 'Room 418', 'available']] };
+		let currentFloor = 1, zoom = 100, checkedIn = true; const $ = s => document.querySelector(s);
+		function renderRooms() { const grid = $('#room-grid'); grid.innerHTML = ''; rooms[currentFloor].forEach(room => { const el = document.createElement('button'); el.className = `room room-${room[4]}`; el.dataset.room = room[0]; el.style.left = room[1] + '%'; el.style.top = room[2] + '%'; el.innerHTML = `<span class="room-number">${room[0]}</span><span>${room[3]}</span><i></i>`; el.addEventListener('click', () => openRoom(room)); grid.appendChild(el); }); }
+		function renderFaculty(query = '') { const list = $('#faculty-list'), matches = faculty.filter(p => checkedIn || p.name !== 'Dr. Elena Rivera').filter(p => (p.name + p.role + p.subject).toLowerCase().includes(query.toLowerCase())); $('#result-count').textContent = matches.length; list.innerHTML = matches.map(p => `<button class="faculty-item" data-room="${p.room}" data-floor="${p.floor}"><div class="avatar avatar-${p.color}">${p.initials}</div><div class="faculty-copy"><strong>${p.name}</strong><span>${p.role}</span><small><i class="status-dot ${p.status === 'In session' ? 'dot-busy' : 'dot-free'}"></i>${p.status} · Room ${p.room}</small></div><span class="faculty-arrow">→</span></button>`).join('') || '<div class="empty-state">No active faculty found.</div>'; document.querySelectorAll('.faculty-item').forEach(item => item.addEventListener('click', () => locateFaculty(item.dataset.room, Number(item.dataset.floor)))); }
+		function locateFaculty(room, floor) { currentFloor = floor; document.querySelectorAll('.floor-tab').forEach(t => t.classList.toggle('active', Number(t.dataset.floor) === floor)); renderRooms(); document.querySelector(`[data-room="${room}"]`)?.classList.add('highlighted'); showToast(`Room ${room} highlighted on floor ${floor}`); }
+		function openRoom(room) { const p = faculty.find(item => item.room === room[0]); $('#modal-room').textContent = `ROOM ${room[0]}`; $('#modal-status').textContent = room[4] === 'available' ? 'Available' : room[4] === 'closed' ? 'Unavailable' : 'In session'; $('#modal-status').className = `status-badge ${room[4] === 'closed' ? 'bad' : room[4] === 'available' ? 'neutral-badge' : 'good'}`; $('#modal-title').textContent = p?.subject || room[3]; $('#modal-professor').textContent = p?.name || (room[4] === 'available' ? 'No class scheduled' : 'Class in progress'); $('#modal-floor').textContent = `${currentFloor}${currentFloor === 1 ? 'st' : currentFloor === 2 ? 'nd' : currentFloor === 3 ? 'rd' : 'th'} floor`; $('#modal-time').textContent = p?.time || 'No schedule'; $('#room-modal').classList.add('open'); }
+		function showToast(message) { $('#toast').textContent = message; $('#toast').classList.add('show'); setTimeout(() => $('#toast').classList.remove('show'), 2400); }
+		renderRooms(); renderFaculty(); document.querySelectorAll('.floor-tab').forEach(tab => tab.addEventListener('click', () => { currentFloor = Number(tab.dataset.floor); document.querySelectorAll('.floor-tab').forEach(t => t.classList.toggle('active', t === tab)); renderRooms(); })); $('#faculty-search').addEventListener('input', e => renderFaculty(e.target.value)); $('#refresh-map').addEventListener('click', () => { renderRooms(); showToast('Map refreshed successfully'); }); $('#zoom-in').addEventListener('click', () => { zoom = Math.min(130, zoom + 10); $('#map-canvas').style.transform = `scale(${zoom / 100})`; $('#zoom-level').textContent = zoom + '%'; }); $('#zoom-out').addEventListener('click', () => { zoom = Math.max(80, zoom - 10); $('#map-canvas').style.transform = `scale(${zoom / 100})`; $('#zoom-level').textContent = zoom + '%'; }); $('#reset-map').addEventListener('click', () => { zoom = 100; $('#map-canvas').style.transform = 'scale(1)'; $('#zoom-level').textContent = '100%'; }); $('#directions-button').addEventListener('click', () => showToast('Select a room to begin directions')); $('#view-all').addEventListener('click', () => { $('#faculty-search').value = ''; renderFaculty(); showToast('Showing all active faculty'); }); $('#tap-button').addEventListener('click', e => { checkedIn = !checkedIn; e.target.textContent = checkedIn ? 'Tap out for the day' : 'Tap in for the day'; $('#faculty-view h2').textContent = checkedIn ? 'You are checked in.' : 'You are checked out.'; $('#faculty-view .tap-card p').textContent = checkedIn ? 'Your presence is visible to students while you are on campus.' : 'Your presence is hidden from students until you tap in again.'; renderFaculty(); showToast(checkedIn ? 'You are now visible on the student map' : 'You are now hidden from the student map'); });
+		document.querySelectorAll('.nav-item[data-view]').forEach(item => item.addEventListener('click', () => { const view = item.dataset.view; document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); item.classList.add('active'); document.querySelectorAll('.view-section').forEach(s => s.classList.toggle('active-view', s.id === `${view}-view`)); $('#breadcrumb-current').textContent = view === 'student' ? 'Live campus map' : view === 'faculty' ? 'Faculty portal' : 'Admin overview'; })); document.querySelector('.modal-close').addEventListener('click', () => $('#room-modal').classList.remove('open')); document.querySelector('.modal-backdrop').addEventListener('click', () => $('#room-modal').classList.remove('open'));
 	</script>
 </body>
+
 </html>

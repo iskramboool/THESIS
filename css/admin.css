@@ -18,3 +18,104 @@
     background: #fbeae8;
     color: #b8615b
 }
+
+/* Admin Portal Notification System */
+.notification-section {
+    display: flex;
+    align-items: center;
+    gap: 10px
+}
+
+.notification-btn {
+    position: relative;
+    padding: 8px 12px;
+    font-size: 14px
+}
+
+.notification-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: var(--red);
+    color: #fff;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: grid;
+    place-items: center;
+    font-size: 10px;
+    font-weight: 700
+}
+
+.notifications-panel {
+    margin-bottom: 18px
+}
+
+.notifications-list {
+    display: grid;
+    gap: 12px
+}
+
+.notification-item {
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 15px;
+    background: #fff8ef
+}
+
+.notification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px
+}
+
+.notification-details {
+    margin-bottom: 12px;
+    font-size: 11px;
+    color: var(--muted)
+}
+
+.notification-details p {
+    margin: 4px 0
+}
+
+.notification-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap
+}
+
+.notification-actions button {
+    font-size: 10px;
+    padding: 6px 10px
+}
+
+/* Admin Edit Modal Styles */
+.edit-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    width: 90%;
+    max-width: 500px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    padding: 20px
+}
+
+.edit-modal .card-header {
+    margin-bottom: 20px
+}
+
+.edit-modal form {
+    margin-top: 15px
+}
+
+.edit-modal button[type="submit"] {
+    width: 100%;
+    margin-top: 15px
+}

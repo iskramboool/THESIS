@@ -13,10 +13,358 @@
     <link rel="stylesheet" href="../css/faculty.css">
 </head>
 
-<body data-root="../">
+<body class="faculty-portal-page" data-root="../">
     <div id="app"></div>
     <script src="../js/common.js"></script>
-    <script>if (requireRole(['faculty'])) { const s = getSession(); renderPage('Faculty Portal', 'Faculty portal', `<div class="page"><div class="page-heading"><div><p class="eyebrow">Faculty workspace · ${s.department}</p><h1>Good morning, ${s.name}.</h1><p class="subheading">Manage your schedule and submit changes for Admin confirmation.</p></div><a class="outline" href="faculty-schedule.html">Manage schedules</a></div><div class="grid grid-2"><div class="card presence-card"><span class="kicker">QR attendance · P000</span><h2>Present on campus</h2><p>Your QR attendance record is valid for 12 hours after server validation. Room sensors can change this to <b>In Session</b>.</p><div class="qr-code">P000<br>09·15·26</div><button class="primary" id="scan-qr">Record QR attendance</button><p id="qr-status" class="request-note">No new scan recorded in this browser.</p></div><div class="card qr-panel"><div class="card-header"><div><h2>My schedule requests</h2><p>New and edited schedules require Admin approval.</p></div><span class="badge pending">Pending review</span></div><div class="table-wrap"><table class="data-table"><thead><tr><th>Subject</th><th>Room</th><th>Status</th></tr></thead><tbody id="faculty-schedule-table"></tbody></table></div><a class="primary" style="display:inline-block;margin-top:15px;text-decoration:none" href="faculty-schedule.html">Add schedule</a></div></div><div class="card profile-request"><div class="card-header"><div><h2>Profile change request</h2><p>Name, title, and department changes stay pending until Admin approval.</p></div><span class="badge pending">Pending Admin Approval</span></div><button class="outline" id="profile-request">Submit change request</button></div></div>`); const mine = getSchedules().filter(x => x.faculty === s.name); document.querySelector('#faculty-schedule-table').innerHTML = mine.length ? mine.map(x => `<tr><td>${x.subject}<br><small>${x.code}</small></td><td>${x.room}</td><td><span class="badge ${x.status}">${x.status}</span></td></tr>`).join('') : '<tr><td colspan="3" class="empty">No schedules submitted yet.</td></tr>'; document.querySelector('#scan-qr').onclick = () => { localStorage.setItem('qrAttendance', JSON.stringify({ code: 'P000', date: new Date().toISOString().slice(0, 10), scannedAt: Date.now(), expiresAt: Date.now() + 43200000 })); document.querySelector('#qr-status').textContent = 'QR attendance recorded. Valid for 12 hours.'; toast('Attendance saved with timestamp and expiry.'); }; document.querySelector('#profile-request').onclick = () => toast('Profile change request submitted for Admin approval.') } </script>
+    <script>if (requireRole(['faculty'])) {
+            const s = getSession();
+            renderPage(
+                'Faculty Portal',
+                'Faculty portal',
+                `<div class="page faculty-portal-layout">
+            <div class="page-heading">
+                <div>
+                    <p class="eyebrow">Faculty workspace · ${s.department}</p>
+                    <h1>Good morning, ${s.name}.</h1>
+                    <p class="subheading">Manage your schedule and submit changes for Admin confirmation.</p>
+                </div>
+                <div class="portal-heading-actions">
+                    <a class="outline" href="faculty-schedule.html">Manage schedules</a>
+                    <button class="outline" id="settings-toggle" type="button">Settings</button>
+                </div>
+            </div>
+            <div class="faculty-portal-content">
+                <div class="card presence-card">
+                    <span class="kicker">QR attendance</span>
+                    <h2>Present on campus</h2>
+                    <p>Your QR attendance record is valid for 12 hours after server validation. Room sensors can change this to <b>In Session</b>.</p>
+                    <div class="qr-code" aria-label="Private QR attendance token">QR<br><small>Private faculty token</small></div>
+                        <button class="primary" id="scan-qr">Record QR attendance</button>
+                        <p id="qr-status" class="request-note">No new scan recorded in this browser.</p>
+                    </div>
+                    <div class="card qr-panel">
+                        <div class="card-header">
+                            <div>
+                                <h2>Managed Schedules</h2>
+                                <p>New and edited schedules require Admin approval.</p>
+                            </div>
+                            <span class="badge pending">Pending review</span>
+                        </div>
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>Room</th>
+                                    <th>Time</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="faculty-schedule-table"></tbody>
+                        </table>
+                    </div>
+                        <a class="primary" style="display:inline-block;margin-top:15px;text-decoration:none" href="faculty-schedule.html">Add schedule</a>
+                </div>
+            </div>
+            <!-- Edit Schedule Modal -->
+            <div class="card edit-modal" id="edit-schedule-modal" style="display:none">
+                <div class="card-header">
+                    <div>
+                        <h2>Edit Schedule</h2>
+                        <p>Changes will be submitted for Admin approval.</p>
+                    </div>
+                    <button class="outline" id="close-edit-modal">Close</button>
+                </div>
+                <form id="edit-schedule-form">
+                    <input type="hidden" id="edit-schedule-id">
+                    <div class="form-grid">
+                        <div class="field">
+                            <label for="edit-subject">Subject</label>
+                            <input id="edit-subject" type="text" required>
+                        </div>
+                        <div class="field">
+                            <label for="edit-course">Course <small>(select one or more)</small></label>
+                            <select id="edit-course" multiple size="1" required>
+                                <option value="" disabled selected hidden>Select Course</option>
+                                ${optionList(COURSES)}
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label for="edit-code">Code</label>
+                            <input id="edit-code" type="text" required>
+                        </div>
+                        <div class="field">
+                            <label for="edit-room">Room</label>
+                            <select id="edit-room" required>
+                                ${optionList(ROOMS)}
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label for="edit-year">Year level</label>
+                            <select id="edit-year" required>
+                                ${optionList(['First Year', 'Second Year', 'Third Year', 'Fourth Year'])}
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label for="edit-start">Start time</label>
+                            <div class="time-input-row">
+                                <input id="edit-start" type="time" min="07:00" max="21:00" required>
+                                <button class="outline set-time-btn" type="button" data-time-input="edit-start">Set</button>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="edit-end">End time</label>
+                            <div class="time-input-row">
+                                <input id="edit-end" type="time" min="07:00" max="21:00" required>
+                                <button class="outline set-time-btn" type="button" data-time-input="edit-end">Set</button>
+                            </div>
+                        </div>
+                        <div class="field edit-days-field">
+                            <label>Teaching days</label>
+                            <div class="check-row">
+                                ${DAYS.map(day => `<label><input type="checkbox" name="edit-days" value="${day}">${day}</label>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                    <button class="primary" type="submit">Submit Changes for Approval</button>
+                </form>
+            </div>
+            <div class="card settings-modal" id="settings-modal" style="display:none">
+                <div class="card-header">
+                    <div>
+                        <h2>Settings</h2>
+                        <p>Update your profile information anytime.</p>
+                    </div>
+                    <button class="outline" id="close-settings" type="button">Close</button>
+                </div>
+                <form id="settings-form">
+                    <div class="profile-picture-row">
+                        <img id="profile-picture-preview" alt="Profile preview" hidden>
+                        <div class="field">
+                            <label for="profile-picture">Profile picture <small>(optional)</small></label>
+                            <input id="profile-picture" type="file" accept="image/*">
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="field">
+                            <label for="profile-name">Name</label>
+                            <input id="profile-name" type="text" required>
+                        </div>
+                        <div class="field">
+                            <label for="profile-department">Department</label>
+                            <select id="profile-department" required>${optionList(DEPARTMENTS)}</select>
+                        </div>
+                        <div class="field">
+                            <label for="profile-password">New password <small>(optional)</small></label>
+                            <input id="profile-password" type="password" minlength="8" placeholder="Leave blank to keep current password">
+                        </div>
+                    </div>
+                    <button class="primary" type="submit">Save profile</button>
+                </form>
+            </div>
+        </div>`);
+            if (s.profilePicture) {
+                const roleCard = document.querySelector('.role-card');
+                roleCard.insertAdjacentHTML('afterbegin', `<img class="role-profile-picture" src="${escapeHtml(s.profilePicture)}" alt="Profile picture">`);
+            }
+            const mine = getSchedules().filter(x => x.faculty === s.name);
+            const renderMine = schedules => schedules.length ? schedules.map(x =>
+            `<tr>
+                <td>${x.subject}<br><small>${x.code}</small></td>
+                <td>${x.room}</td>
+                <td>${x.start} – ${x.end}<br><small><span class="badge ${x.status}">${x.status}</span></small></td>
+                <td><button class="outline edit-schedule-btn" data-id="${x.id}">Edit</button> <button class="danger delete-schedule-btn" data-id="${x.id}" aria-label="Delete schedule">🗑</button></td>
+            </tr>`
+            ).join('') : '<tr><td colspan="4" class="empty">No schedules submitted yet.</td></tr>';
+            document.querySelector('#faculty-schedule-table').innerHTML = renderMine(mine);
+            const openEditSchedule = scheduleId => {
+                const schedule = getSchedules().find(item => item.id === scheduleId);
+                if (!schedule) return;
+                document.querySelector('#edit-schedule-id').value = schedule.id;
+                document.querySelector('#edit-subject').value = schedule.subject;
+                const selectedCourses = schedule.courses || (schedule.course ? [schedule.course] : []);
+                document.querySelectorAll('#edit-course option').forEach(option => {
+                    option.selected = selectedCourses.includes(option.value);
+                });
+                document.querySelector('#edit-code').value = schedule.code;
+                document.querySelector('#edit-room').value = schedule.room;
+                document.querySelector('#edit-year').value = schedule.year;
+                document.querySelector('#edit-start').value = schedule.start;
+                document.querySelector('#edit-end').value = schedule.end;
+                document.querySelectorAll('input[name="edit-days"]').forEach(dayInput => {
+                    dayInput.checked = (schedule.days || []).includes(dayInput.value);
+                });
+                document.querySelector('#edit-schedule-modal').style.display = 'block';
+            };
+            const bindScheduleActions = () => {
+                document.querySelectorAll('.edit-schedule-btn').forEach(btn => btn.onclick = () => openEditSchedule(Number(btn.dataset.id)));
+                document.querySelectorAll('.delete-schedule-btn').forEach(btn => btn.onclick = () => {
+                    if (!confirm('Delete this schedule?')) return;
+                    saveSchedules(getSchedules().filter(schedule => schedule.id !== Number(btn.dataset.id)));
+                    document.querySelector('#faculty-schedule-table').innerHTML = renderMine(getSchedules().filter(schedule => schedule.faculty === s.name));
+                    bindScheduleActions();
+                    toast('Schedule deleted.');
+                });
+            };
+            bindScheduleActions();
+            document.querySelectorAll('.set-time-btn').forEach(button => {
+                button.onclick = () => {
+                    const input = document.querySelector(`#${button.dataset.timeInput}`);
+                    if (!input.value) {
+                        toast('Choose a time first.');
+                        input.focus();
+                        return;
+                    }
+                    const label = input.closest('.field').querySelector('label').textContent;
+                    toast(`${label} set to ${input.value}.`);
+                };
+            });
+            
+            // DATABASE: The API must sign and validate this QR payload and set expires_at from its database timestamp
+            document.querySelector('#scan-qr').onclick = () => {
+                localStorage.setItem('qrAttendance', JSON.stringify({ 
+                    userId: s.userId, 
+                    date: new Date().toISOString().slice(0, 10), 
+                    scannedAt: Date.now(), 
+                    expiresAt: Date.now() + 43200000 
+                })); 
+                document.querySelector('#qr-status').textContent = 'QR attendance recorded. Valid for 12 hours.'; 
+                toast('Attendance saved with timestamp and expiry.');
+            }; 
+            
+            if (getValidQrAttendance()) {
+                document.querySelector('#qr-status').textContent = 'Present · QR record valid for up to 12 hours.';
+            }
+            
+            // Close edit modal
+            document.querySelector('#close-edit-modal').onclick = () => {
+                document.querySelector('#edit-schedule-modal').style.display = 'none';
+                document.querySelector('#edit-schedule-form').reset();
+            };
+            
+            // Handle edit schedule form submission
+            document.querySelector('#edit-schedule-form').onsubmit = (e) => {
+                e.preventDefault();
+                
+                const scheduleId = Number(document.querySelector('#edit-schedule-id').value);
+                const newSubject = document.querySelector('#edit-subject').value;
+                const newCourses = [...document.querySelector('#edit-course').selectedOptions].map(option => option.value).filter(Boolean);
+                if (!newCourses.length) {
+                    toast('Select at least one course.');
+                    return;
+                }
+                const newCode = document.querySelector('#edit-code').value;
+                const newRoom = document.querySelector('#edit-room').value;
+                const newYear = document.querySelector('#edit-year').value;
+                const newStart = document.querySelector('#edit-start').value;
+                const newEnd = document.querySelector('#edit-end').value;
+                const newDays = [...document.querySelectorAll('input[name="edit-days"]:checked')].map(dayInput => dayInput.value);
+                if (!newDays.length) {
+                    toast('Select at least one teaching day.');
+                    return;
+                }
+                if (newStart >= newEnd) {
+                    toast('End time must be later than start time.');
+                    return;
+                }
+                
+                // DATABASE: In production, this would submit changes to database for admin approval
+                const data = getSchedules();
+                const scheduleIndex = data.findIndex(s => s.id === scheduleId);
+                
+                if (scheduleIndex !== -1) {
+                    // Update the schedule and mark as pending for admin approval
+                    data[scheduleIndex] = {
+                        ...data[scheduleIndex],
+                        subject: newSubject,
+                        courses: newCourses,
+                        course: newCourses[0],
+                        code: newCode,
+                        room: newRoom,
+                        year: newYear,
+                        start: newStart,
+                        end: newEnd,
+                        days: newDays,
+                        status: 'pending',
+                        submittedAt: new Date().toISOString()
+                    };
+                    
+                    saveSchedules(data);
+                    toast('Schedule changes submitted for Admin approval.');
+                    
+                    // Close modal and refresh the table
+                    document.querySelector('#edit-schedule-modal').style.display = 'none';
+                    document.querySelector('#edit-schedule-form').reset();
+                    
+                    // Refresh the schedule table
+                    const updatedMine = getSchedules().filter(x => x.faculty === s.name);
+                    document.querySelector('#faculty-schedule-table').innerHTML = renderMine(updatedMine);
+                    
+                    bindScheduleActions();
+                }
+            };
+            
+            document.querySelector('#profile-request')?.addEventListener('click', () => {
+                // DATABASE: In production, this would open a profile edit form and submit changes for admin approval
+            });
+            
+            // Change password button
+            document.querySelector('#password-change')?.addEventListener('click', () => {
+                // DATABASE: In production, this would open a password change form with backend validation
+            });
+            const settingsModal = document.querySelector('#settings-modal');
+            const settingsForm = document.querySelector('#settings-form');
+            const profilePicture = document.querySelector('#profile-picture');
+            const profilePicturePreview = document.querySelector('#profile-picture-preview');
+            document.querySelector('#settings-toggle').onclick = () => {
+                document.querySelector('#profile-name').value = s.name || '';
+                document.querySelector('#profile-department').value = s.department || DEPARTMENTS[0];
+                settingsModal.style.display = 'block';
+            };
+            document.querySelector('#close-settings').onclick = () => {
+                settingsModal.style.display = 'none';
+                settingsForm.reset();
+                profilePicturePreview.hidden = true;
+            };
+            profilePicture.onchange = () => {
+                const file = profilePicture.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = () => {
+                    profilePicturePreview.src = reader.result;
+                    profilePicturePreview.hidden = false;
+                };
+                reader.readAsDataURL(file);
+            };
+            settingsForm.onsubmit = async event => {
+                event.preventDefault();
+                const newName = document.querySelector('#profile-name').value.trim();
+                const newDepartment = document.querySelector('#profile-department').value;
+                const newPassword = document.querySelector('#profile-password').value;
+                if (!newName) return toast('Name is required.');
+                if (newPassword && newPassword.length < 8) return toast('New password must be at least 8 characters.');
+                const accountList = JSON.parse(localStorage.getItem('users') || '[]');
+                const account = accountList.find(user => user.id === s.userId) || accountList.find(user => user.role === 'faculty' && user.name === s.name);
+                if (account) {
+                    account.name = newName;
+                    account.department = newDepartment;
+                    if (newPassword) {
+                        const bytes = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(newPassword));
+                        account.passwordHash = [...new Uint8Array(bytes)].map(byte => byte.toString(16).padStart(2, '0')).join('');
+                    }
+                    localStorage.setItem('users', JSON.stringify(accountList));
+                }
+                const profileImage = profilePicturePreview.hidden ? s.profilePicture : profilePicturePreview.src;
+                setSession({ ...s, name: newName, department: newDepartment, profilePicture: profileImage || '' });
+                saveSchedules(getSchedules().map(schedule => schedule.faculty === s.name ? { ...schedule, faculty: newName, department: newDepartment } : schedule));
+                s.name = newName;
+                s.department = newDepartment;
+                settingsModal.style.display = 'none';
+                settingsForm.reset();
+                profilePicturePreview.hidden = true;
+                toast('Profile saved successfully.');
+            };
+        } </script>
 </body>
 
 </html>

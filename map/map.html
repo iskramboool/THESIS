@@ -6,9 +6,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Live Map | Campus Locate</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/common.css">
     <link rel="stylesheet" href="map.css">
 </head>
@@ -17,7 +15,79 @@
     <div id="app"></div>
     <script src="../js/common.js"></script>
     <script src="../js/map.js"></script>
-    <script>const session = getSession() || { role: 'student', name: 'Guest Student' }; setSession(session); renderPage('Map', 'Live campus map', `<div class="page"><div class="page-heading"><div><p class="eyebrow">Live map · Sensor-aware presence</p><h1>Building A campus map.</h1><p class="subheading">Switch floors to inspect rooms, faculty presence, and classroom activity.</p></div></div>${mapMarkup()}</div>`); renderMap();</script>
+    <script>
+        const session = getSession() || { role: 'student', name: 'Guest Student' };
+        setSession(session);
+        const searchOptions = [...new Set([...ROOMS.map(room => `Room ${room}`), ...getSchedules().map(schedule => schedule.faculty)])];
+        renderPage('Map', 'Live campus map',
+            `<div class="page">
+                <div class="page-heading">
+                    <div>
+                        <p class="eyebrow">Live map · Sensor-aware presence</p>
+                        <h1>Building A campus map.</h1>
+                        <p class="subheading">Switch floors to inspect rooms, faculty presence, and classroom activity. </p>
+                    </div>
+                </div>
+                <div class="card map-controls">
+                    <div class="field">
+                        <label for="map-search">Faculty and room locator</label>
+                        <input id="map-search" type="search" list="map-search-options" placeholder="Search instructor or room..." autocomplete="off">
+                        <datalist id="map-search-options">${searchOptions.map(option => `<option value="${escapeHtml(option)}"></option>`).join('')}</datalist>
+                        <small class="search-hint">Try a room number such as 204 or a faculty name.</small>
+                    </div>
+                    <div class="field">
+                        <label for="room-type-filter">Room type</label>
+                        <select id="room-type-filter">
+                            <option value="all">All room types</option>
+                            <option value="laboratory">Laboratories</option>
+                            <option value="office">Offices</option>
+                            <option value="gymnasium">Gymnasium</option>
+                            <option value="classroom">Rooms/Classrooms</option>
+                            <option value="library">Library</option>
+                            <option value="canteen">Canteen</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="map-stats">
+                    <div class="stat-item">
+                        <span>Faculty on Campus</span>
+                        <strong>${getSchedules().filter(schedule => schedule.status === 'present').length}</strong>
+                    </div>
+                    <div class="stat-item">
+                        <span>Active classrooms</span>
+                        <strong>${getSchedules().filter(schedule => schedule.status === 'present').length}</strong>
+                    </div>
+                </div>
+                <div class="map-shell">
+                    <div class="card-header" style="padding:18px 20px 0">
+                        <div>
+                            <h2>Building A · Live campus map</h2>
+                            <p>Select a floor and room to inspect current presence.</p>
+                        </div>
+                        <span class="badge active">Live sensor feed</span>
+                    </div>
+                    <div class="floor-tabs">
+                        ${[1, 2, 3, 4].map(floor => `<button class="floor-tab ${floor === 1 ? 'active' : ''}" data-floor="${floor}">${floor}F · Floor ${floor}</button>`).join('')}
+                    </div>
+                    <div class="map-canvas" id="map-canvas">
+                        <span class="map-wing north-wing">North Wing</span>
+                        <span class="map-wing south-wing">South Wing</span>
+                        <span class="you-are-here">You&apos;re here · 4F</span>
+                    </div>
+                </div>
+                <div class="color-legend">
+                    <div class="legend-item"><span class="legend-color occupied"></span><span>Occupied</span></div>
+                    <div class="legend-item"><span class="legend-color not-occupied"></span><span>Not Occupied</span></div>
+                </div>
+                <div class="map-modal-backdrop" id="map-modal" hidden>
+                    <section class="map-modal" role="dialog" aria-modal="true" aria-labelledby="map-modal-title">
+                        <button class="map-modal-close" id="map-modal-close" type="button" aria-label="Close details">×</button>
+                        <div id="map-modal-content"></div>
+                    </section>
+                </div>
+            </div>`); 
+        renderMap();
+    </script>
 </body>
 
 </html>

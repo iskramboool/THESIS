@@ -5,3 +5,51 @@
 .request-note {
     color: #ae7a38 !important
 }
+
+.schedule-meta-grid,
+.schedule-time-grid {
+    display: grid;
+    gap: 15px;
+    margin-top: 15px
+}
+
+.schedule-meta-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr))
+}
+
+.schedule-time-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr))
+}
+
+.time-input-row {
+    display: flex;
+    align-items: center;
+    gap: 8px
+}
+
+.time-input-row input {
+    min-width: 0;
+    flex: 1
+}
+
+.set-time-btn {
+    flex: 0 0 auto;
+    padding: 10px 12px
+}
+
+.faculty-schedule-heading .back-to-portal {
+    flex: 0 0 auto;
+    white-space: nowrap
+}
+
+@media (max-width: 760px) {
+    .schedule-meta-grid,
+    .schedule-time-grid {
+        grid-template-columns: 1fr
+    }
+
+    .faculty-schedule-heading .back-to-portal {
+        align-self: stretch;
+        text-align: center
+    }
+}

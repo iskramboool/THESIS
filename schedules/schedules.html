@@ -16,7 +16,110 @@
 <body data-root="../">
     <div id="app"></div>
     <script src="../js/common.js"></script>
-    <script>const session = getSession() || { role: 'student', name: 'Guest Student' }; setSession(session); renderPage('Faculty Schedules', 'Faculty schedules', `<div class="page"><div class="page-heading"><div><p class="eyebrow">${session.role === 'student' ? 'View only' : 'Scheduling workspace'}</p><h1>Faculty schedules.</h1><p class="subheading">Engineering data is active; other departments remain available for future entries.</p></div>${session.role !== 'student' ? '<button class="outline" id="export">Export schedule</button>' : ''}</div><div class="card filter-card"><div class="form-grid"><div class="field"><label>Department</label><select id="department-filter">${optionList(DEPARTMENTS, 'Engineering Department')}</select></div><div class="field"><label>Year level</label><select id="year-filter"><option>ALL</option><option>First Year</option><option>Second Year</option><option>Third Year</option><option>Fourth Year</option></select></div></div></div><div class="card"><div class="card-header"><div><h2>07:00 AM – 09:00 PM</h2><p>One cell per hour · multi-day schedules share one entry.</p></div></div><div id="schedule-table" class="schedule-grid"></div></div></div>`); const table = document.querySelector('#schedule-table'); const draw = () => renderScheduleTable(table, document.querySelector('#department-filter').value, document.querySelector('#year-filter').value); draw(); document.querySelector('#department-filter').onchange = draw; document.querySelector('#year-filter').onchange = draw; document.querySelector('#export')?.addEventListener('click', () => { const blob = new Blob([JSON.stringify(getSchedules(), null, 2)], { type: 'application/json' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'faculty-schedules.json'; a.click() });</script>
+    <script>const session = getSession() || { role: 'student', name: 'Guest Student' };
+    setSession(session);
+    renderPage(
+        'Faculty Schedule', 'Faculty schedules',
+        `<div class="page">
+            <div class="page-heading">
+                <div>
+                    <p class="eyebrow">${session.role === 'student' ? 'View only' : 'Scheduling workspace'}</p>
+                <h1>Faculty Schedule</h1>
+                    <p class="subheading">Engineering data is active; other departments remain available for future entries.</p>
+                </div>
+                    ${['faculty', 'admin'].includes(session.role) ? '<button class="outline" id="export">Export Schedule</button>' : ''}
+            </div>
+
+            <div class="card filter-card">
+                <div class="form-grid">
+                    <div class="field">
+                        <label>Department</label>
+                            <select id="department-filter">
+                            ${optionList(DEPARTMENTS, 'Engineering Department')}
+                            </select>
+                    </div>
+                    <div class="field">
+                        <label>Year level</label>
+                            <select id="year-filter">
+                                <option>ALL</option>
+                                <option>First Year</option>
+                                <option>Second Year</option>
+                                <option>Third Year</option>
+                                <option>Fourth Year</option>
+                            </select>
+                    </div>
+                    <div class="field">
+                        <label for="course-filter">Course</label>
+                        <select id="course-filter">
+                            <option value="ALL">All Courses</option>
+                            ${optionList(COURSES)}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card instructor-search-card">
+                <div class="field">
+                    <label for="faculty-filter">Search Instructor</label>
+                    <input id="faculty-filter" type="search" placeholder="Search faculty name to view their schedule">
+                </div>
+            </div>
+
+            <div class="card faculty-directory">
+                <div class="card-header"><div><h2>Faculty list</h2><p id="faculty-directory-description"></p></div></div>
+                <div id="faculty-list"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h2>Weekly Schedule</h2>
+                        <p>One cell per hour · multi-day schedules share one entry.</p>
+                    </div>
+                </div>
+                <div id="schedule-table" class="schedule-grid"></div>
+            </div>
+        </div>`
+    );
+    const table = document.querySelector('#schedule-table');
+    const directory = document.querySelector('#faculty-list');
+    const draw = () => {
+        const department = document.querySelector('#department-filter').value;
+        const year = document.querySelector('#year-filter').value;
+        const course = document.querySelector('#course-filter').value;
+        const query = document.querySelector('#faculty-filter').value.toLowerCase();
+        document.querySelector('#faculty-directory-description').textContent = `List of all faculty members from the ${department}.`;
+        
+        // DATABASE: In production, fetch faculty list from database
+        const people = [...new Map(getSchedules().filter(item => item.department === department && item.faculty.toLowerCase().includes(query)).map(item => [item.faculty, item])).values()];
+        
+        directory.innerHTML = people.length ? ['Full-time Instructor', 'Part-time Instructor', 'Program Chairperson'].map(title => {
+            const group = people.filter(person => person.title === title);
+            return group.length ? `<section><strong>${title}</strong><p>${group.map(person => `<button class="faculty-directory-link" type="button" data-faculty="${escapeHtml(person.faculty)}">${escapeHtml(person.faculty)}</button>`).join(' · ')}</p></section>` : '';
+        }).join('') : '<p class="empty">No instructors found.</p>';
+        
+        // If searching for specific faculty, pass their name to renderScheduleTable
+        const facultyName = query ? people.find(p => p.faculty.toLowerCase().includes(query))?.faculty : '';
+        renderScheduleTable(table, department, year, facultyName, course);
+    }; draw();
+    directory.addEventListener('click', event => {
+        const facultyLink = event.target.closest('.faculty-directory-link');
+        if (!facultyLink) return;
+        document.querySelector('#faculty-filter').value = facultyLink.dataset.faculty;
+        draw();
+        document.querySelector('#schedule-table').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    document.querySelector('#department-filter').onchange = draw;
+    document.querySelector('#year-filter').onchange = draw;
+    document.querySelector('#course-filter').onchange = draw;
+    document.querySelector('#faculty-filter').oninput = draw;
+    document.querySelector('#export')?.addEventListener('click', () => {
+        const blob = new Blob([JSON.stringify(getSchedules(), null, 2)], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'faculty-schedules.json';
+        a.click()
+    });</script>
 </body>
 
 </html>

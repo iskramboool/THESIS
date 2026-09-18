@@ -16,7 +16,19 @@
 <body data-root="../">
     <div id="app"></div>
     <script src="../js/common.js"></script>
-    <script>setSession({ role: 'student', name: 'Guest Student' }); renderPage('Map', 'Live campus map', `<div class="page"><div class="page-heading"><div><p class="eyebrow">Student view · Read only</p><h1>Find your way around campus.</h1><p class="subheading">Locate faculty and classrooms across all four floors.</p></div><a class="outline" href="../schedules/schedules.html">View faculty schedules</a></div>${mapMarkup()}<div class="card map-note"><strong>Presence terminology</strong><p><b>Present</b> means faculty are confirmed inside campus. <b>In Session</b> means a classroom sensor and schedule confirm they are teaching in the room.</p></div></div>`); renderMap();</script>
+    <script>setSession({ role: 'student', name: 'Guest Student' });
+    
+        renderPage('Map', 'Live campus map', `<div class="page">
+            ${mapMarkup()}
+            
+            <div class="card map-note">
+                <strong>Presence terminology</strong>
+                <p><b>Present</b> means faculty are confirmed inside campus. <b>In Session</b> means a classroom sensor and schedule confirm they are teaching in the room.</p>
+            </div>
+            </div>`);
+
+        renderMap();
+    </script>
 </body>
 
 </html>

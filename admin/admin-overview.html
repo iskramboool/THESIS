@@ -16,7 +16,193 @@
 <body data-root="../">
     <div id="app"></div>
     <script src="../js/common.js"></script>
-    <script>if (requireRole(['admin'])) { const s = getSession(); renderPage('Admin Overview', 'Admin overview', `<div class="page"><div class="page-heading"><div><p class="eyebrow">Department administration</p><h1>${s.department}</h1><p class="subheading">Only faculty, schedules, and attendance for your assigned department are visible.</p></div></div><div class="grid grid-3"><div class="card stat"><span>Faculty</span><strong>12</strong><p>Department members</p></div><div class="card stat"><span>Pending approvals</span><strong>${getSchedules().filter(x => x.status === 'pending').length}</strong><p>Awaiting review</p></div><div class="card stat"><span>Present today</span><strong>9 / 12</strong><p>QR records verified</p></div></div><div class="card" style="margin-top:18px"><div class="card-header"><div><h2>FCFS request queue</h2><p>Older valid requests appear first. Conflicts must be resolved before approval.</p></div><a class="primary" href="admin-schedule.html">Review schedules</a></div><div class="table-wrap"><table class="data-table"><thead><tr><th>Faculty</th><th>Subject</th><th>Submitted</th><th>Status</th></tr></thead><tbody>${getSchedules().filter(x => x.department === s.department).map(x => `<tr><td>${x.faculty}</td><td>${x.code} · ${x.subject}</td><td>Today · ${x.id}</td><td><span class="badge ${x.status}">${x.status}</span></td></tr>`).join('')}</tbody></table></div></div></div>`) }</script>
+    <script>if (requireRole(['admin'])) { 
+        const s = getSession(); 
+        renderPage('Admin Overview', 'Admin overview', 
+        `<div class="page">
+            <div class="page-heading">
+                <div>
+                    <p class="eyebrow">Department administration</p>
+                    <h1>${s.department}</h1>
+                    <p class="subheading">Only faculty, schedules, and attendance for your assigned department are visible.</p>
+                </div>
+            </div>
+            <div class="grid grid-3">
+                <div class="card stat">
+                    <span>Faculty</span>
+                    <strong>${[...new Set(getSchedules().filter(x => x.department === s.department).map(x => x.faculty))].length}</strong>
+                    <p>Department members</p>
+                </div><div class="card stat">
+                    <span>Pending approvals</span>
+                    <strong>${getSchedules().filter(x => x.status === 'pending' && x.department === s.department).length}</strong>
+                    <p>Awaiting review</p>
+                </div>
+                <div class="card stat">
+                    <span>Present today</span>
+                    <strong>${getSchedules().filter(x => x.status === 'present' && x.department === s.department).length} / ${[...new Set(getSchedules().filter(x => x.department === s.department).map(x => x.faculty))].length}</strong>
+                    <p>QR records verified</p>
+                </div>
+            </div>
+            <div class="card" style="margin-top:18px">
+                <div class="card-header">
+                    <div>
+                        <h2>FCFS request queue</h2>
+                        <p>Older valid requests appear first. Conflicts must be resolved before approval.</p>
+                    </div>
+                    <a class="primary" href="admin-schedule.html">Review schedules</a>
+                </div>
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Faculty</th>
+                                <th>Subject</th>
+                                <th>Submitted</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${getSchedules().filter(x => x.department === s.department).sort((a, b) => new Date(a.submittedAt || 0) - new Date(b.submittedAt || 0)).map(x => {
+                                const statusClass = x.status === 'approved' ? 'present' : x.status;
+                                const statusText = x.status === 'approved' ? 'Present' : x.status;
+                                return `<tr><td>${escapeHtml(x.faculty)}</td><td>${escapeHtml(x.code)} · ${escapeHtml(x.subject)}</td><td>${x.submittedAt ? new Date(x.submittedAt).toLocaleString() : 'Unknown'}</td><td><span class="badge ${statusClass}">${statusText}</span></td></tr>`;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="card" style="margin-top:18px">
+                <div class="card-header">
+                    <div>
+                        <h2>Attendance Management</h2>
+                        <p>Edit faculty attendance status (Present, In Session, Rest Day).</p>
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Faculty</th>
+                                <th>Title</th>
+                                <th>Current Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${[...new Map(getSchedules().filter(x => x.department === s.department).map(x => [x.faculty, x])).values()].map(faculty => `
+                                <tr>
+                                    <td>${escapeHtml(faculty.faculty)}</td>
+                                    <td>${escapeHtml(faculty.title)}</td>
+                                    <td><span class="badge present">Present</span></td>
+                                    <td><button class="outline edit-attendance-btn" data-faculty="${escapeHtml(faculty.faculty)}">Edit</button></td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Edit Attendance Modal -->
+            <div class="card edit-modal" id="edit-attendance-modal" style="display:none">
+                <div class="card-header">
+                    <div>
+                        <h2>Edit Attendance Status</h2>
+                        <p>Change faculty attendance status.</p>
+                    </div>
+                    <button class="outline" id="close-attendance-modal">Close</button>
+                </div>
+                <form id="edit-attendance-form">
+                    <input type="hidden" id="edit-attendance-faculty">
+                    <div class="field">
+                        <label for="edit-attendance-status">Attendance Status</label>
+                        <select id="edit-attendance-status" required>
+                            <option value="Present">Present</option>
+                            <option value="In Session">In Session</option>
+                            <option value="Rest Day">Rest Day</option>
+                            <option value="Not Present">Not Present</option>
+                        </select>
+                    </div>
+                    <button class="primary" type="submit">Update Status</button>
+                </form>
+            </div>
+        `);
+        
+        // DATABASE: In production, these stats would update in real-time via database connections
+        // Example database query code (commented for reference):
+        /*
+        const db = await getDatabaseConnection();
+        const facultyCount = await db.query('SELECT COUNT(*) FROM faculty WHERE department = ?', [s.department]);
+        const pendingCount = await db.query('SELECT COUNT(*) FROM schedules WHERE status = "pending" AND department = ?', [s.department]);
+        const presentCount = await db.query('SELECT COUNT(*) FROM attendance WHERE date = CURDATE() AND department = ?', [s.department]);
+        */
+        
+        // Edit attendance button
+        document.querySelectorAll('.edit-attendance-btn').forEach(btn => {
+            btn.onclick = () => {
+                const facultyName = btn.dataset.faculty;
+                // Populate the edit attendance form
+                document.querySelector('#edit-attendance-faculty').value = facultyName;
+                document.querySelector('#edit-attendance-status').value = 'Present';
+                
+                // Show the edit attendance modal
+                document.querySelector('#edit-attendance-modal').style.display = 'block';
+            };
+        });
+        
+        // Close attendance modal
+        document.querySelector('#close-attendance-modal').onclick = () => {
+            document.querySelector('#edit-attendance-modal').style.display = 'none';
+            document.querySelector('#edit-attendance-form').reset();
+        };
+        
+        // Handle edit attendance form submission
+        document.querySelector('#edit-attendance-form').onsubmit = (e) => {
+            e.preventDefault();
+            
+            const facultyName = document.querySelector('#edit-attendance-faculty').value;
+            const newStatus = document.querySelector('#edit-attendance-status').value;
+            
+            // DATABASE: In production, this would update the attendance database table
+            const savedStatuses = JSON.parse(localStorage.getItem('facultyPresence') || '{}');
+            savedStatuses[facultyName] = newStatus.toLowerCase().replace(' ', '-');
+            localStorage.setItem('facultyPresence', JSON.stringify(savedStatuses));
+            
+            toast(`Attendance status updated for ${facultyName}: ${newStatus}`);
+            
+            // Close modal and refresh the table
+            document.querySelector('#edit-attendance-modal').style.display = 'none';
+            document.querySelector('#edit-attendance-form').reset();
+            
+            // Refresh the attendance table
+            const updatedFaculty = [...new Map(getSchedules().filter(x => x.department === s.department).map(x => [x.faculty, x])).values()];
+            document.querySelector('.table-wrap tbody').innerHTML = updatedFaculty.map(faculty => {
+                const savedStatuses = JSON.parse(localStorage.getItem('facultyPresence') || '{}');
+                const currentStatus = savedStatuses[faculty.faculty] || 'present';
+                const statusClass = currentStatus === 'in-session' ? 'present' : currentStatus;
+                const statusText = currentStatus.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
+                
+                return `
+                    <tr>
+                        <td>${escapeHtml(faculty.faculty)}</td>
+                        <td>${escapeHtml(faculty.title)}</td>
+                        <td><span class="badge ${statusClass}">${statusText}</span></td>
+                        <td><button class="outline edit-attendance-btn" data-faculty="${escapeHtml(faculty.faculty)}">Edit</button></td>
+                    </tr>
+                `;
+            }).join('');
+            
+            // Re-attach event listeners to new edit buttons
+            document.querySelectorAll('.edit-attendance-btn').forEach(btn => {
+                btn.onclick = () => {
+                    const newFacultyName = btn.dataset.faculty;
+                    document.querySelector('#edit-attendance-faculty').value = newFacultyName;
+                    document.querySelector('#edit-attendance-status').value = 'Present';
+                    document.querySelector('#edit-attendance-modal').style.display = 'block';
+                };
+            });
+        };
+    }</script>
 </body>
 
 </html>
